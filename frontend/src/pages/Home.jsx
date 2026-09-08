@@ -562,10 +562,17 @@ export default function Home() {
         item.name_so ||
         item.nameSo ||
         item.somaliName ||
+        item.somali_name ||
         item.title_so ||
         item.titleSo ||
+        item.title_somali ||
+        item.service_so ||
+        item.serviceSo ||
+        item.service_name_so ||
+        item.serviceNameSo ||
         item.name ||
         item.title ||
+        item.service ||
         ""
       );
     }
@@ -574,10 +581,17 @@ export default function Home() {
       item.name_en ||
       item.nameEn ||
       item.englishName ||
+      item.english_name ||
       item.title_en ||
       item.titleEn ||
+      item.title_english ||
+      item.service_en ||
+      item.serviceEn ||
+      item.service_name_en ||
+      item.serviceNameEn ||
       item.name ||
       item.title ||
+      item.service ||
       ""
     );
   };
@@ -594,6 +608,8 @@ export default function Home() {
         item.description_so ||
         item.descriptionSo ||
         item.somaliDescription ||
+        item.somali_description ||
+        item.desc_so ||
         item.description ||
         ""
       );
@@ -603,6 +619,8 @@ export default function Home() {
       item.description_en ||
       item.descriptionEn ||
       item.englishDescription ||
+      item.english_description ||
+      item.desc_en ||
       item.description ||
       ""
     );
@@ -1800,6 +1818,8 @@ export default function Home() {
                       }
                       href={`tel:${
                         contact.phone ||
+                        contact.phone_number ||
+                        contact.phoneNumber ||
                         contact.number ||
                         ""
                       }`}
@@ -1820,6 +1840,8 @@ export default function Home() {
 
                           <p className="mt-1 text-sm font-bold opacity-80">
                             {contact.phone ||
+                              contact.phone_number ||
+                              contact.phoneNumber ||
                               contact.number ||
                               "N/A"}
                           </p>
