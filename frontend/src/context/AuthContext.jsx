@@ -1,27 +1,52 @@
 import React, {
   createContext,
   useCallback,
+  useContext,
   useEffect,
   useState,
 } from "react";
 
 import api from "../services/api";
 
+// =========================================================
+// AUTH CONTEXT
+// =========================================================
+
 export const AuthContext = createContext(null);
+
+// =========================================================
+// USE AUTH HOOK
+// =========================================================
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error(
+      "useAuth must be used inside an AuthProvider"
+    );
+  }
+
+  return context;
+}
+
+// =========================================================
+// AUTH PROVIDER
+// =========================================================
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // =========================================================
+  // =======================================================
   // AUTHENTICATION STATUS
-  // =========================================================
+  // =======================================================
 
   const isAuthenticated = Boolean(user);
 
-  // =========================================================
+  // =======================================================
   // CHECK CURRENT SESSION
-  // =========================================================
+  // =======================================================
 
   const checkSession = useCallback(async () => {
     try {
@@ -47,17 +72,17 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  // =========================================================
+  // =======================================================
   // RUN SESSION CHECK WHEN APP STARTS
-  // =========================================================
+  // =======================================================
 
   useEffect(() => {
     checkSession();
   }, [checkSession]);
 
-  // =========================================================
+  // =======================================================
   // LOGIN
-  // =========================================================
+  // =======================================================
 
   const login = async (email, password) => {
     try {
@@ -77,8 +102,8 @@ export function AuthProvider({ children }) {
         );
       }
 
-      // Save authenticated user in React state.
-      // JWT/session cookie is handled by the backend.
+      // Save authenticated user
+      // JWT/session cookie is handled by backend
       setUser(loggedInUser);
 
       return {
@@ -101,9 +126,9 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // =========================================================
+  // =======================================================
   // LOGOUT
-  // =========================================================
+  // =======================================================
 
   const logout = async () => {
     try {
@@ -120,17 +145,17 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // =========================================================
+  // =======================================================
   // REFRESH USER
-  // =========================================================
+  // =======================================================
 
   const refreshUser = async () => {
     return await checkSession();
   };
 
-  // =========================================================
+  // =======================================================
   // CONTEXT VALUE
-  // =========================================================
+  // =======================================================
 
   const value = {
     user,
@@ -146,6 +171,10 @@ export function AuthProvider({ children }) {
     checkSession,
     refreshUser,
   };
+
+  // =======================================================
+  // PROVIDER
+  // =======================================================
 
   return (
     <AuthContext.Provider value={value}>
