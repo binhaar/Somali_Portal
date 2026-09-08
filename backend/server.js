@@ -25,16 +25,45 @@ const app = express();
 
 connectDB();
 
+/* =========================
+   CORS CONFIGURATION
+   ========================= */
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://somali-portal.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      // Allow requests without an Origin header
+      // such as Postman, Thunder Client, or server-to-server requests.
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
 
+/* =========================
+   MIDDLEWARE
+   ========================= */
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+/* =========================
+   API ROUTES
+   ========================= */
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -52,11 +81,19 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/admin/users", adminUserRoutes);
 app.use("/api/settings", settingRoutes);
 
+/* =========================
+   ROOT ROUTE
+   ========================= */
+
 app.get("/", (req, res) => {
   res.json({
     message: "Somalia Government Portal API is running",
   });
 });
+
+/* =========================
+   SERVER
+   ========================= */
 
 const PORT = process.env.PORT || 5000;
 
