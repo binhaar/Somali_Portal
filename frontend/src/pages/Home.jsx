@@ -7,42 +7,37 @@ import React, {
 
 import {
   ArrowRight,
+  BriefcaseBusiness,
   Building2,
   CalendarDays,
-  ChevronDown,
   ChevronRight,
   ExternalLink,
   FileText,
   Globe2,
   GraduationCap,
   Landmark,
-  LogOut,
-  Menu,
   Phone,
   Search,
   ShieldCheck,
   Star,
-  User,
-  X,
-  BriefcaseBusiness,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
+
 import api from "../services/api";
 import { AuthContext } from "../context/AuthContext";
+import Navbar from "../components/Navbar";
 
 /* =========================================================
    SOMALIA LOGO
-   ========================================================= */
+========================================================= */
 
 const SOMALIA_LOGO =
   "https://somaliagov.netlify.app/logos/coat-of-arms.png";
 
 /* =========================================================
-   LOCAL LEADERS IMAGES
-   These files must exist inside:
-   frontend/public/leaders/
-   ========================================================= */
+   LEADERS
+========================================================= */
 
 const LEADERS = [
   {
@@ -53,6 +48,9 @@ const LEADERS = [
     shortRole: "President",
     shortRoleSo: "Madaxweynaha",
     image: "/leaders/president.jpg",
+    profileUrl: "https://villasomalia.gov.so/the-president/",
+    websiteUrl: "https://villasomalia.gov.so/",
+    websiteName: "Villa Somalia",
   },
 
   {
@@ -63,6 +61,9 @@ const LEADERS = [
     shortRole: "Prime Minister",
     shortRoleSo: "Ra'iisul Wasaaraha",
     image: "/leaders/prime-minister.jpg",
+    profileUrl: "https://opm.gov.so/en/prime-ministers/prime-minister",
+    websiteUrl: "https://opm.gov.so/",
+    websiteName: "Office of the Prime Minister",
   },
 
   {
@@ -73,6 +74,9 @@ const LEADERS = [
     shortRole: "Speaker of House of the People",
     shortRoleSo: "Guddoomiyaha Golaha Shacabka",
     image: "/leaders/speaker-house.jpg",
+    profileUrl: "https://parliament.gov.so/",
+    websiteUrl: "https://parliament.gov.so/",
+    websiteName: "House of the People",
   },
 
   {
@@ -83,12 +87,15 @@ const LEADERS = [
     shortRole: "Speaker of Upper House",
     shortRoleSo: "Guddoomiyaha Aqalka Sare",
     image: "/leaders/speaker-senate.jpg",
+    profileUrl: "https://senate.gov.so/speaker/?lang=en",
+    websiteUrl: "https://senate.gov.so/",
+    websiteName: "Federal Parliament – Upper House",
   },
 ];
 
 /* =========================================================
    IMAGE FALLBACK
-   ========================================================= */
+========================================================= */
 
 const getImageFallback = (event) => {
   if (!event?.currentTarget) return;
@@ -99,23 +106,7 @@ const getImageFallback = (event) => {
 
 /* =========================================================
    API ARRAY HELPER
-
-   Your API returns:
-
-   {
-     success: true,
-     data: [...]
-   }
-
-   This helper supports:
-   - response.data
-   - response.data.data
-   - response.data.services
-   - response.data.ministries
-   - response.data.agencies
-   - response.data.events
-   - response.data.contacts
-   ========================================================= */
+========================================================= */
 
 const extractList = (response, key) => {
   const payload = response?.data;
@@ -137,7 +128,7 @@ const extractList = (response, key) => {
 
 /* =========================================================
    HOME
-   ========================================================= */
+========================================================= */
 
 export default function Home() {
   const navigate = useNavigate();
@@ -147,10 +138,12 @@ export default function Home() {
   const user = auth.user;
   const logout = auth.logout;
 
+  /* =======================================================
+     STATE
+  ======================================================= */
+
   const [language, setLanguage] = useState("en");
 
-  const [mobileMenu, setMobileMenu] = useState(false);
-  const [userMenu, setUserMenu] = useState(false);
   const [search, setSearch] = useState("");
 
   const [services, setServices] = useState([]);
@@ -163,7 +156,7 @@ export default function Home() {
 
   /* =======================================================
      TRANSLATIONS
-     ======================================================= */
+  ======================================================= */
 
   const t = {
     en: {
@@ -174,174 +167,361 @@ export default function Home() {
       events: "Events",
       about: "About",
 
-      official: "Official Portal of the Federal Government",
-      federal: "Federal Republic of Somalia",
-      slogan: "Peace, Progress, and Prosperity.",
+      official:
+        "Official Portal of the Federal Government",
+
+      federal:
+        "Federal Republic of Somalia",
+
+      slogan:
+        "Peace, Progress, and Prosperity.",
 
       search:
         "Search for services, ministries, agencies, or documents...",
 
-      popular: "Popular:",
-      passport: "Passport",
-      visa: "Visa",
-      jobs: "Jobs",
-      tender: "Tender",
+      popular:
+        "Popular:",
 
-      leadership: "Executive Leadership",
+      passport:
+        "Passport",
+
+      visa:
+        "Visa",
+
+      jobs:
+        "Jobs",
+
+      tender:
+        "Tender",
+
+      leadership:
+        "Executive Leadership",
+
       leadershipDesc:
         "Meet the leaders of the Federal Republic of Somalia.",
 
-      viewProfile: "View Profile",
+      viewProfile:
+        "View Profile",
 
-      onlineServices: "Online Government Services",
+      onlineServices:
+        "Online Government Services",
+
       onlineServicesDesc:
         "Access essential government services quickly and securely.",
 
-      viewAllServices: "View All Services",
+      viewAllServices:
+        "View All Services",
 
-      importantDates: "Important National Dates",
+      importantDates:
+        "Important National Dates",
+
       importantDatesDesc:
         "Stay informed about important national events and occasions.",
 
-      federalMinistries: "Federal Ministries",
+      federalMinistries:
+        "Federal Ministries",
+
       federalMinistriesDesc:
         "Explore the ministries responsible for delivering national priorities.",
 
-      nationalAgencies: "National Agencies",
+      nationalAgencies:
+        "National Agencies",
+
       nationalAgenciesDesc:
         "Find key government agencies and institutions.",
 
-      emergency: "Emergency Contacts",
+      emergency:
+        "Emergency Contacts",
+
       emergencyDesc:
         "Important numbers for emergency and public services.",
 
-      latestEvents: "Latest Government Events",
+      latestEvents:
+        "Latest Government Events",
+
       latestEventsDesc:
         "Stay updated with important events and activities.",
 
-      searchResults: "Search Results",
-      noResults: "No results found.",
+      searchResults:
+        "Search Results",
 
-      login: "Login",
-      register: "Register",
-      dashboard: "Dashboard",
-      logout: "Logout",
+      noResults:
+        "No results found.",
+
+      login:
+        "Login",
+
+      register:
+        "Register",
+
+      dashboard:
+        "Dashboard",
+
+      logout:
+        "Logout",
 
       footerDescription:
         "The official digital gateway to the Federal Government of Somalia.",
 
-      quickLinks: "Quick Links",
-      government: "Government",
-      support: "Support",
+      quickLinks:
+        "Quick Links",
 
-      privacy: "Privacy Policy",
-      terms: "Terms of Service",
+      government:
+        "Government",
 
-      rights: "All rights reserved.",
+      support:
+        "Support",
 
-      federalLeadership: "Federal Leadership",
-      federalGovernment: "Federal Government",
+      privacy:
+        "Privacy Policy",
 
-      onlineService: "Online Service",
-      learnMore: "Learn More",
-      exploreServices: "Explore Services",
-      nationalCalendar: "National Calendar",
-      nationalInstitutions: "National Institutions",
-      publicSafety: "Public Safety",
-      latestUpdates: "Latest Updates",
-      governmentServices: "Government Services",
+      terms:
+        "Terms of Service",
+
+      rights:
+        "All rights reserved.",
+
+      federalLeadership:
+        "Federal Leadership",
+
+      federalGovernment:
+        "Federal Government",
+
+      onlineService:
+        "Online Service",
+
+      learnMore:
+        "Learn More",
+
+      exploreServices:
+        "Explore Services",
+
+      nationalCalendar:
+        "National Calendar",
+
+      nationalInstitutions:
+        "National Institutions",
+
+      publicSafety:
+        "Public Safety",
+
+      latestUpdates:
+        "Latest Updates",
+
+      governmentServices:
+        "Government Services",
+
+      contact:
+        "Contact",
+
+      vision:
+        "National Vision",
+
+      visionDescription:
+        "Building a peaceful, stable, prosperous and inclusive Somalia.",
+
+      constitution:
+        "Constitution",
+
+      constitutionDescription:
+        "Learn about the constitutional framework of Somalia.",
+
+      parliament:
+        "Parliament",
+
+      parliamentDescription:
+        "Explore the Federal Parliament of Somalia.",
     },
 
     so: {
-      home: "Bogga Hore",
-      services: "Adeegyada",
-      ministries: "Wasaaradaha",
-      agencies: "Hay'adaha",
-      events: "Dhacdooyinka",
-      about: "Ku Saabsan",
+      home:
+        "Bogga Hore",
 
-      official: "Bogga Rasmiga ah ee Dowladda Federaalka",
-      federal: "Jamhuuriyadda Federaalka Soomaaliya",
-      slogan: "Nabad, Horumar iyo Barwaaqo.",
+      services:
+        "Adeegyada",
+
+      ministries:
+        "Wasaaradaha",
+
+      agencies:
+        "Hay'adaha",
+
+      events:
+        "Dhacdooyinka",
+
+      about:
+        "Ku Saabsan",
+
+      official:
+        "Bogga Rasmiga ah ee Dowladda Federaalka",
+
+      federal:
+        "Jamhuuriyadda Federaalka Soomaaliya",
+
+      slogan:
+        "Nabad, Horumar iyo Barwaaqo.",
 
       search:
         "Ka raadi adeegyo, wasaarado, hay'ado ama dukumiintiyo...",
 
-      popular: "Raadinta caanka ah:",
-      passport: "Baasaboor",
-      visa: "Fiiso",
-      jobs: "Shaqooyin",
-      tender: "Qandaraas",
+      popular:
+        "Raadinta caanka ah:",
 
-      leadership: "Hoggaanka Sare",
+      passport:
+        "Baasaboor",
+
+      visa:
+        "Fiiso",
+
+      jobs:
+        "Shaqooyin",
+
+      tender:
+        "Qandaraas",
+
+      leadership:
+        "Hoggaanka Sare",
+
       leadershipDesc:
         "La kulan hoggaanka Jamhuuriyadda Federaalka Soomaaliya.",
 
-      viewProfile: "Arag Macluumaadka",
+      viewProfile:
+        "Arag Macluumaadka",
 
-      onlineServices: "Adeegyada Dowladda ee Online-ka",
+      onlineServices:
+        "Adeegyada Dowladda ee Online-ka",
+
       onlineServicesDesc:
         "Si fudud oo ammaan ah uga hel adeegyada muhiimka ah ee dowladda.",
 
-      viewAllServices: "Arag Dhammaan Adeegyada",
+      viewAllServices:
+        "Arag Dhammaan Adeegyada",
 
-      importantDates: "Taariikhaha Muhiimka ah",
+      importantDates:
+        "Taariikhaha Muhiimka ah",
+
       importantDatesDesc:
         "La soco dhacdooyinka iyo maalmaha muhiimka ah ee qaranka.",
 
-      federalMinistries: "Wasaaradaha Federaalka",
+      federalMinistries:
+        "Wasaaradaha Federaalka",
+
       federalMinistriesDesc:
         "Baro wasaaradaha ka shaqeeya mudnaanta iyo horumarka qaranka.",
 
-      nationalAgencies: "Hay'adaha Qaranka",
+      nationalAgencies:
+        "Hay'adaha Qaranka",
+
       nationalAgenciesDesc:
         "Hel hay'adaha iyo xarumaha muhiimka ah ee dowladda.",
 
-      emergency: "Lambarada Gurmadka",
+      emergency:
+        "Lambarada Gurmadka",
+
       emergencyDesc:
         "Lambarada muhiimka ah ee adeegyada gurmadka iyo bulshada.",
 
-      latestEvents: "Dhacdooyinka Dowladda",
+      latestEvents:
+        "Dhacdooyinka Dowladda",
+
       latestEventsDesc:
         "La soco munaasabadaha iyo hawlaha muhiimka ah ee dowladda.",
 
-      searchResults: "Natiijooyinka Raadinta",
-      noResults: "Wax natiijo ah lama helin.",
+      searchResults:
+        "Natiijooyinka Raadinta",
 
-      login: "Gal",
-      register: "Isdiiwaangeli",
-      dashboard: "Dashboard",
-      logout: "Ka bax",
+      noResults:
+        "Wax natiijo ah lama helin.",
+
+      login:
+        "Gal",
+
+      register:
+        "Isdiiwaangeli",
+
+      dashboard:
+        "Dashboard",
+
+      logout:
+        "Ka bax",
 
       footerDescription:
         "Albaabka rasmiga ah ee dijitaalka ah ee Dowladda Federaalka Soomaaliya.",
 
-      quickLinks: "Xiriirro Degdeg ah",
-      government: "Dowladda",
-      support: "Taageero",
+      quickLinks:
+        "Xiriirro Degdeg ah",
 
-      privacy: "Siyaasadda Asturnaanta",
-      terms: "Shuruudaha Adeegga",
+      government:
+        "Dowladda",
 
-      rights: "Dhammaan xuquuqdu way dhowran yihiin.",
+      support:
+        "Taageero",
 
-      federalLeadership: "Hoggaanka Federaalka",
-      federalGovernment: "Dowladda Federaalka",
+      privacy:
+        "Siyaasadda Asturnaanta",
 
-      onlineService: "Adeeg Online ah",
-      learnMore: "Wax badan ka ogow",
-      exploreServices: "Baadh Adeegyada",
-      nationalCalendar: "Jadwalka Qaranka",
-      nationalInstitutions: "Hay'adaha Qaranka",
-      publicSafety: "Badbaadada Bulshada",
-      latestUpdates: "Wararkii Ugu Dambeeyay",
-      governmentServices: "Adeegyada Dowladda",
+      terms:
+        "Shuruudaha Adeegga",
+
+      rights:
+        "Dhammaan xuquuqdu way dhowran yihiin.",
+
+      federalLeadership:
+        "Hoggaanka Federaalka",
+
+      federalGovernment:
+        "Dowladda Federaalka",
+
+      onlineService:
+        "Adeeg Online ah",
+
+      learnMore:
+        "Wax badan ka ogow",
+
+      exploreServices:
+        "Baadh Adeegyada",
+
+      nationalCalendar:
+        "Jadwalka Qaranka",
+
+      nationalInstitutions:
+        "Hay'adaha Qaranka",
+
+      publicSafety:
+        "Badbaadada Bulshada",
+
+      latestUpdates:
+        "Wararkii Ugu Dambeeyay",
+
+      governmentServices:
+        "Adeegyada Dowladda",
+
+      contact:
+        "Xiriir",
+
+      vision:
+        "Himilada Qaranka",
+
+      visionDescription:
+        "Dhisidda Soomaaliya nabad ah, xasilloon, barwaaqo leh oo loo dhan yahay.",
+
+      constitution:
+        "Dastuurka",
+
+      constitutionDescription:
+        "Baro nidaamka dastuuriga ah ee Soomaaliya.",
+
+      parliament:
+        "Baarlamaanka",
+
+      parliamentDescription:
+        "Baro Baarlamaanka Federaalka Soomaaliya.",
     },
   }[language];
 
   /* =======================================================
-     FETCH ALL HOME DATA
-     ======================================================= */
+     LOAD HOME DATA
+  ======================================================= */
 
   useEffect(() => {
     let mounted = true;
@@ -371,14 +551,12 @@ export default function Home() {
         /* SERVICES */
 
         if (servicesRes.status === "fulfilled") {
-          const data = extractList(
-            servicesRes.value,
-            "services"
+          setServices(
+            extractList(
+              servicesRes.value,
+              "services"
+            )
           );
-
-          console.log("HOME SERVICES:", data);
-
-          setServices(data);
         } else {
           console.error(
             "Services API error:",
@@ -389,14 +567,12 @@ export default function Home() {
         /* MINISTRIES */
 
         if (ministriesRes.status === "fulfilled") {
-          const data = extractList(
-            ministriesRes.value,
-            "ministries"
+          setMinistries(
+            extractList(
+              ministriesRes.value,
+              "ministries"
+            )
           );
-
-          console.log("HOME MINISTRIES:", data);
-
-          setMinistries(data);
         } else {
           console.error(
             "Ministries API error:",
@@ -407,14 +583,12 @@ export default function Home() {
         /* AGENCIES */
 
         if (agenciesRes.status === "fulfilled") {
-          const data = extractList(
-            agenciesRes.value,
-            "agencies"
+          setAgencies(
+            extractList(
+              agenciesRes.value,
+              "agencies"
+            )
           );
-
-          console.log("HOME AGENCIES:", data);
-
-          setAgencies(data);
         } else {
           console.error(
             "Agencies API error:",
@@ -425,14 +599,12 @@ export default function Home() {
         /* EVENTS */
 
         if (eventsRes.status === "fulfilled") {
-          const data = extractList(
-            eventsRes.value,
-            "events"
+          setEvents(
+            extractList(
+              eventsRes.value,
+              "events"
+            )
           );
-
-          console.log("HOME EVENTS:", data);
-
-          setEvents(data);
         } else {
           console.error(
             "Events API error:",
@@ -443,20 +615,15 @@ export default function Home() {
         /* EMERGENCY */
 
         if (emergencyRes.status === "fulfilled") {
-          const data = extractList(
-            emergencyRes.value,
-            "contacts"
+          setEmergencyContacts(
+            extractList(
+              emergencyRes.value,
+              "contacts"
+            )
           );
-
-          console.log(
-            "HOME EMERGENCY CONTACTS:",
-            data
-          );
-
-          setEmergencyContacts(data);
         } else {
           console.error(
-            "Emergency API error:",
+            "Emergency contacts API error:",
             emergencyRes.reason
           );
         }
@@ -481,29 +648,37 @@ export default function Home() {
 
   /* =======================================================
      SEARCH
-     ======================================================= */
+  ======================================================= */
 
   const normalizedSearch =
     search.trim().toLowerCase();
 
   const searchResults = useMemo(() => {
-    if (!normalizedSearch) return [];
+    if (!normalizedSearch) {
+      return [];
+    }
 
     const matchItem = (item) => {
       const text = [
         item?.name,
         item?.title,
+
         item?.name_en,
         item?.name_so,
+
         item?.nameEn,
         item?.nameSo,
+
         item?.title_en,
         item?.title_so,
+
         item?.titleEn,
         item?.titleSo,
+
         item?.description,
         item?.description_en,
         item?.description_so,
+
         item?.descriptionEn,
         item?.descriptionSo,
       ]
@@ -552,7 +727,7 @@ export default function Home() {
 
   /* =======================================================
      GET NAME
-     ======================================================= */
+  ======================================================= */
 
   const getName = (item) => {
     if (!item) return "";
@@ -598,7 +773,7 @@ export default function Home() {
 
   /* =======================================================
      GET DESCRIPTION
-     ======================================================= */
+  ======================================================= */
 
   const getDescription = (item) => {
     if (!item) return "";
@@ -628,7 +803,7 @@ export default function Home() {
 
   /* =======================================================
      GET ID
-     ======================================================= */
+  ======================================================= */
 
   const getId = (item) => {
     return item?._id || item?.id;
@@ -636,12 +811,9 @@ export default function Home() {
 
   /* =======================================================
      SCROLL
-     ======================================================= */
+  ======================================================= */
 
   const scrollTo = (id) => {
-    setMobileMenu(false);
-    setUserMenu(false);
-
     setTimeout(() => {
       document
         .getElementById(id)
@@ -654,7 +826,7 @@ export default function Home() {
 
   /* =======================================================
      SERVICE CLICK
-     ======================================================= */
+  ======================================================= */
 
   const handleServiceClick = (service) => {
     const externalUrl =
@@ -670,6 +842,7 @@ export default function Home() {
       );
 
       navigate("/login");
+
       return;
     }
 
@@ -692,7 +865,7 @@ export default function Home() {
 
   /* =======================================================
      POPULAR SEARCH
-     ======================================================= */
+  ======================================================= */
 
   const popularSearch = (value) => {
     setSearch(value);
@@ -704,8 +877,8 @@ export default function Home() {
   };
 
   /* =======================================================
-     LEADER DATA
-     ======================================================= */
+     LEADER HELPERS
+  ======================================================= */
 
   const getLeaderName = (leader) => {
     return language === "so"
@@ -727,347 +900,62 @@ export default function Home() {
 
   /* =======================================================
      RENDER
-     ======================================================= */
+  ======================================================= */
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
 
-      {/* =================================================
+      {/* =====================================================
           NAVBAR
-          ================================================= */}
+      ====================================================== */}
 
-      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <Navbar
+        language={language}
+        setLanguage={setLanguage}
+        user={user}
+        logout={logout}
+        scrollTo={scrollTo}
+        t={t}
+        getImageFallback={getImageFallback}
+      />
 
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-
-          {/* LOGO */}
-
-          <button
-            onClick={() => scrollTo("home")}
-            className="flex items-center gap-3"
-          >
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-200">
-
-              <img
-                src={SOMALIA_LOGO}
-                alt="Somalia Coat of Arms"
-                className="h-10 w-10 object-contain"
-                onError={getImageFallback}
-              />
-
-            </div>
-
-            <div className="hidden text-left sm:block">
-              <div className="text-sm font-bold tracking-wide text-[#123c2f]">
-                FEDERAL REPUBLIC
-              </div>
-
-              <div className="text-xs text-slate-500">
-                OF SOMALIA
-              </div>
-            </div>
-          </button>
-
-          {/* DESKTOP NAV */}
-
-          <nav className="hidden items-center gap-7 lg:flex">
-
-            <button
-              onClick={() => scrollTo("home")}
-              className="text-sm font-semibold text-slate-700 transition hover:text-blue-600"
-            >
-              {t.home}
-            </button>
-
-            <button
-              onClick={() => scrollTo("services")}
-              className="text-sm font-semibold text-slate-700 transition hover:text-blue-600"
-            >
-              {t.services}
-            </button>
-
-            <button
-              onClick={() => scrollTo("ministries")}
-              className="text-sm font-semibold text-slate-700 transition hover:text-blue-600"
-            >
-              {t.ministries}
-            </button>
-
-            <button
-              onClick={() => scrollTo("agencies")}
-              className="text-sm font-semibold text-slate-700 transition hover:text-blue-600"
-            >
-              {t.agencies}
-            </button>
-
-            <button
-              onClick={() => scrollTo("events")}
-              className="text-sm font-semibold text-slate-700 transition hover:text-blue-600"
-            >
-              {t.events}
-            </button>
-
-          </nav>
-
-          {/* RIGHT */}
-
-          <div className="hidden items-center gap-3 lg:flex">
-
-            {/* LANGUAGE */}
-
-            <button
-              onClick={() =>
-                setLanguage(
-                  language === "en" ? "so" : "en"
-                )
-              }
-              className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-            >
-              <Globe2 size={17} />
-
-              {language === "en"
-                ? "English"
-                : "Somali"}
-
-              <ChevronDown size={15} />
-            </button>
-
-            {/* USER */}
-
-            {user ? (
-              <div className="relative">
-
-                <button
-                  onClick={() =>
-                    setUserMenu(!userMenu)
-                  }
-                  className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm"
-                >
-
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-700">
-                    <User size={16} />
-                  </div>
-
-                  <span className="max-w-[130px] truncate">
-                    {user.name ||
-                      user.fullName ||
-                      user.email ||
-                      "Account"}
-                  </span>
-
-                  <ChevronDown size={15} />
-
-                </button>
-
-                {userMenu && (
-                  <div className="absolute right-0 mt-2 w-52 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
-
-                    <button
-                      onClick={() => {
-                        setUserMenu(false);
-
-                        if (
-                          user.role === "admin" ||
-                          user.isAdmin
-                        ) {
-                          navigate(
-                            "/admin/dashboard"
-                          );
-                        } else {
-                          navigate("/dashboard");
-                        }
-                      }}
-                      className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium hover:bg-slate-100"
-                    >
-                      <Landmark size={17} />
-                      {t.dashboard}
-                    </button>
-
-                    <button
-                      onClick={async () => {
-                        setUserMenu(false);
-
-                        try {
-                          await logout?.();
-                        } catch (error) {
-                          console.error(
-                            "Logout error:",
-                            error
-                          );
-                        }
-
-                        navigate("/");
-                      }}
-                      className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium text-red-600 hover:bg-red-50"
-                    >
-                      <LogOut size={17} />
-                      {t.logout}
-                    </button>
-
-                  </div>
-                )}
-
-              </div>
-            ) : (
-              <>
-                <button
-                  onClick={() =>
-                    navigate("/login")
-                  }
-                  className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-100"
-                >
-                  {t.login}
-                </button>
-
-                <button
-                  onClick={() =>
-                    navigate("/register")
-                  }
-                  className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
-                >
-                  {t.register}
-                </button>
-              </>
-            )}
-
-          </div>
-
-          {/* MOBILE BUTTON */}
-
-          <button
-            onClick={() =>
-              setMobileMenu(!mobileMenu)
-            }
-            className="rounded-xl p-2 hover:bg-slate-100 lg:hidden"
-          >
-            {mobileMenu ? (
-              <X size={25} />
-            ) : (
-              <Menu size={25} />
-            )}
-          </button>
-
-        </div>
-
-        {/* MOBILE MENU */}
-
-        {mobileMenu && (
-          <div className="border-t border-slate-200 bg-white px-4 py-4 lg:hidden">
-
-            <div className="space-y-1">
-
-              {[
-                ["home", t.home],
-                ["services", t.services],
-                ["ministries", t.ministries],
-                ["agencies", t.agencies],
-                ["events", t.events],
-              ].map(([id, label]) => (
-                <button
-                  key={id}
-                  onClick={() => scrollTo(id)}
-                  className="block w-full rounded-xl px-4 py-3 text-left font-semibold hover:bg-slate-100"
-                >
-                  {label}
-                </button>
-              ))}
-
-              <button
-                onClick={() =>
-                  setLanguage(
-                    language === "en" ? "so" : "en"
-                  )
-                }
-                className="flex w-full items-center gap-2 rounded-xl px-4 py-3 font-semibold hover:bg-slate-100"
-              >
-                <Globe2 size={18} />
-
-                {language === "en"
-                  ? "Somali"
-                  : "English"}
-              </button>
-
-              {!user ? (
-                <div className="grid grid-cols-2 gap-2 pt-2">
-
-                  <button
-                    onClick={() =>
-                      navigate("/login")
-                    }
-                    className="rounded-xl border border-slate-200 px-4 py-3 font-semibold"
-                  >
-                    {t.login}
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      navigate("/register")
-                    }
-                    className="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white"
-                  >
-                    {t.register}
-                  </button>
-
-                </div>
-              ) : (
-                <button
-                  onClick={() =>
-                    navigate(
-                      user.role === "admin"
-                        ? "/admin/dashboard"
-                        : "/dashboard"
-                    )
-                  }
-                  className="mt-2 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white"
-                >
-                  {t.dashboard}
-                </button>
-              )}
-
-            </div>
-          </div>
-        )}
-
-      </header>
-
-      {/* =================================================
+      {/* =====================================================
           HERO
-          ================================================= */}
+      ====================================================== */}
 
       <section
         id="home"
-        className="relative overflow-hidden bg-gradient-to-br from-[#0b5cab] via-[#0878c9] to-[#24a9e8]"
+        className="relative overflow-hidden bg-gradient-to-br from-[#0B3D91] via-[#1261B5] to-[#27A9E8]"
       >
+        {/* Background decoration */}
 
-        {/* BACKGROUND EFFECTS */}
+        <div className="absolute inset-0 overflow-hidden">
 
-        <div className="absolute inset-0 opacity-20">
+          <div className="absolute -left-24 top-10 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
 
-          <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-white blur-3xl" />
+          <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-cyan-300/20 blur-3xl" />
 
-          <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-cyan-200 blur-3xl" />
+          <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-blue-300/10 blur-3xl" />
 
         </div>
 
-        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[1.15fr_.85fr] lg:px-8 lg:py-28">
+        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1.1fr_.9fr] lg:px-8 lg:py-28">
 
           {/* HERO LEFT */}
 
           <div className="text-white">
 
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur">
-
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur">
               <ShieldCheck size={17} />
 
               {t.official}
-
             </div>
 
             <h1 className="max-w-3xl text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               {t.federal}
             </h1>
 
-            <p className="mt-5 max-w-2xl text-lg font-medium text-blue-50 sm:text-xl">
+            <p className="mt-5 max-w-2xl text-lg font-medium leading-8 text-blue-50 sm:text-xl">
               {t.slogan}
             </p>
 
@@ -1076,23 +964,24 @@ export default function Home() {
             <div className="relative mt-9 max-w-2xl">
 
               <Search
-                className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"
                 size={21}
+                className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"
               />
 
               <input
+                type="text"
                 value={search}
-                onChange={(e) =>
-                  setSearch(e.target.value)
+                onChange={(event) =>
+                  setSearch(event.target.value)
                 }
                 placeholder={t.search}
-                className="h-16 w-full rounded-2xl border border-white/30 bg-white pl-14 pr-5 text-base font-medium text-slate-900 outline-none shadow-2xl placeholder:text-slate-400 focus:ring-4 focus:ring-white/20"
+                className="h-16 w-full rounded-2xl border border-white/30 bg-white pl-14 pr-5 text-base font-medium text-slate-900 shadow-2xl outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-white/20"
               />
 
               {/* SEARCH RESULTS */}
 
               {normalizedSearch && (
-                <div className="absolute left-0 right-0 top-[72px] z-50 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 text-slate-900 shadow-2xl">
+                <div className="absolute left-0 right-0 top-[72px] z-40 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 text-slate-900 shadow-2xl">
 
                   <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-400">
                     {t.searchResults}
@@ -1106,6 +995,7 @@ export default function Home() {
                             getId(result) ||
                             index
                           }
+                          type="button"
                           onClick={() => {
                             setSearch("");
 
@@ -1116,25 +1006,31 @@ export default function Home() {
                               handleServiceClick(
                                 result
                               );
+                            } else if (
+                              result.type ===
+                              "ministry"
+                            ) {
+                              scrollTo(
+                                "ministries"
+                              );
+                            } else {
+                              scrollTo(
+                                "agencies"
+                              );
                             }
                           }}
-                          className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left hover:bg-slate-50"
+                          className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-blue-50"
                         >
-
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#0B3D91]">
 
                             {result.type ===
                             "service" ? (
                               <FileText size={18} />
                             ) : result.type ===
                               "ministry" ? (
-                              <Building2
-                                size={18}
-                              />
+                              <Building2 size={18} />
                             ) : (
-                              <Landmark
-                                size={18}
-                              />
+                              <Landmark size={18} />
                             )}
 
                           </div>
@@ -1155,7 +1051,6 @@ export default function Home() {
                             size={17}
                             className="text-slate-400"
                           />
-
                         </button>
                       )
                     )
@@ -1170,7 +1065,7 @@ export default function Home() {
 
             </div>
 
-            {/* POPULAR */}
+            {/* POPULAR SEARCH */}
 
             <div className="mt-6 flex flex-wrap items-center gap-2">
 
@@ -1186,10 +1081,11 @@ export default function Home() {
               ].map((item) => (
                 <button
                   key={item}
+                  type="button"
                   onClick={() =>
                     popularSearch(item)
                   }
-                  className="rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white hover:text-blue-700"
+                  className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white hover:text-[#0B3D91]"
                 >
                   {item}
                 </button>
@@ -1199,7 +1095,7 @@ export default function Home() {
 
           </div>
 
-          {/* HERO RIGHT — SOMALIA LOGO */}
+          {/* HERO RIGHT */}
 
           <div className="flex justify-center lg:justify-end">
 
@@ -1215,15 +1111,17 @@ export default function Home() {
                     src={SOMALIA_LOGO}
                     alt="Coat of Arms of Somalia"
                     className="h-full w-full object-contain"
-                    onError={getImageFallback}
+                    onError={
+                      getImageFallback
+                    }
                   />
 
                 </div>
 
               </div>
 
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-5 py-2 text-sm font-bold text-[#123c2f] shadow-xl">
-                Federal Republic of Somalia
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-5 py-2 text-sm font-bold text-[#0B3D91] shadow-xl">
+                {t.federal}
               </div>
 
             </div>
@@ -1231,12 +1129,11 @@ export default function Home() {
           </div>
 
         </div>
-
       </section>
 
-      {/* =================================================
+      {/* =====================================================
           EXECUTIVE LEADERSHIP
-          ================================================= */}
+      ====================================================== */}
 
       <section
         id="leadership"
@@ -1245,15 +1142,13 @@ export default function Home() {
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-          {/* SECTION TITLE */}
-
           <div className="mx-auto max-w-2xl text-center">
 
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91]">
               <Landmark size={24} />
             </div>
 
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0B3D91]">
               {t.federalLeadership}
             </p>
 
@@ -1267,8 +1162,6 @@ export default function Home() {
 
           </div>
 
-          {/* LEADER CARDS */}
-
           <div className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
 
             {LEADERS.map(
@@ -1278,8 +1171,6 @@ export default function Home() {
                   className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
                 >
 
-                  {/* IMAGE */}
-
                   <div className="relative h-80 overflow-hidden bg-gradient-to-b from-blue-50 to-slate-100">
 
                     <img
@@ -1288,32 +1179,26 @@ export default function Home() {
                         leader
                       )}
                       className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105"
-                      onError={getImageFallback}
+                      onError={
+                        getImageFallback
+                      }
                     />
-
-                    {/* IMAGE GRADIENT */}
 
                     <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 to-transparent" />
 
-                    {/* NUMBER */}
-
-                    <div className="absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-sm font-black text-blue-700 shadow-lg backdrop-blur">
+                    <div className="absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-sm font-black text-[#0B3D91] shadow-lg">
                       0{index + 1}
                     </div>
 
-                    {/* SOMALIA FLAG */}
-
-                    <div className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-lg backdrop-blur">
+                    <div className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-lg">
                       <span className="text-lg">
                         🇸🇴
                       </span>
                     </div>
 
-                    {/* ROLE */}
-
                     <div className="absolute bottom-4 left-5 right-5">
 
-                      <span className="inline-flex max-w-full rounded-full bg-blue-600 px-3 py-1 text-xs font-bold text-white shadow-lg">
+                      <span className="inline-flex max-w-full rounded-full bg-[#0B3D91] px-3 py-1 text-xs font-bold text-white shadow-lg">
                         {getLeaderShortRole(
                           leader
                         )}
@@ -1322,8 +1207,6 @@ export default function Home() {
                     </div>
 
                   </div>
-
-                  {/* CARD CONTENT */}
 
                   <div className="p-5">
 
@@ -1334,11 +1217,26 @@ export default function Home() {
                     </h3>
 
                     <p className="mt-2 min-h-[48px] text-sm leading-6 text-slate-500">
-                      {getLeaderRole(
-                        leader
-                      )}
+                      {getLeaderRole(leader)}
                     </p>
 
+                    <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-4">
+                      <Globe2 size={16} className="shrink-0 text-[#0B3D91]" />
+                      <span className="truncate text-xs font-bold text-slate-600">
+                        {leader.websiteName}
+                      </span>
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-2 gap-2">
+                      <a href={leader.profileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-700 transition hover:border-[#0B3D91] hover:bg-blue-50 hover:text-[#0B3D91]">
+                        <FileText size={15} />
+                        {language === "so" ? "Macluumaad" : "View Profile"}
+                      </a>
+                      <a href={leader.websiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0B3D91] px-3 py-2.5 text-xs font-bold text-white transition hover:bg-[#082f70]">
+                        <ExternalLink size={15} />
+                        {language === "so" ? "Website-ka" : "Official Site"}
+                      </a>
+                    </div>
 
                   </div>
 
@@ -1352,9 +1250,9 @@ export default function Home() {
 
       </section>
 
-      {/* =================================================
+      {/* =====================================================
           SERVICES
-          ================================================= */}
+      ====================================================== */}
 
       <section
         id="services"
@@ -1367,7 +1265,7 @@ export default function Home() {
 
             <div>
 
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0B3D91]">
                 {t.governmentServices}
               </p>
 
@@ -1382,30 +1280,30 @@ export default function Home() {
             </div>
 
             <button
+              type="button"
               onClick={() =>
                 navigate("/services")
               }
-              className="inline-flex items-center gap-2 self-start rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 sm:self-auto"
+              className="inline-flex items-center gap-2 self-start rounded-xl bg-[#0B3D91] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#082F70] sm:self-auto"
             >
               {t.viewAllServices}
+
               <ArrowRight size={17} />
             </button>
 
           </div>
 
-          {/* SERVICE CARDS */}
-
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
 
             {loading ? (
-              Array.from({ length: 8 }).map(
-                (_, index) => (
-                  <div
-                    key={index}
-                    className="h-52 animate-pulse rounded-3xl bg-white shadow-sm"
-                  />
-                )
-              )
+              Array.from({
+                length: 8,
+              }).map((_, index) => (
+                <div
+                  key={index}
+                  className="h-52 animate-pulse rounded-3xl bg-white shadow-sm"
+                />
+              ))
             ) : services.length > 0 ? (
               services
                 .slice(0, 8)
@@ -1416,6 +1314,7 @@ export default function Home() {
                         getId(service) ||
                         index
                       }
+                      type="button"
                       onClick={() =>
                         handleServiceClick(
                           service
@@ -1426,7 +1325,7 @@ export default function Home() {
 
                       <div className="flex items-start justify-between">
 
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 transition group-hover:bg-blue-600 group-hover:text-white">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91] transition group-hover:bg-[#0B3D91] group-hover:text-white">
 
                           {index % 4 === 0 ? (
                             <FileText size={22} />
@@ -1446,7 +1345,7 @@ export default function Home() {
 
                         <ArrowRight
                           size={18}
-                          className="text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-600"
+                          className="text-slate-300 transition group-hover:translate-x-1 group-hover:text-[#0B3D91]"
                         />
 
                       </div>
@@ -1465,11 +1364,14 @@ export default function Home() {
                       service.externalUrl ||
                       service.url ||
                       service.link ? (
-                        <div className="mt-4 flex items-center gap-1 text-xs font-bold text-blue-600">
+                        <div className="mt-4 flex items-center gap-1 text-xs font-bold text-[#0B3D91]">
+
                           <ExternalLink
                             size={13}
                           />
+
                           {t.onlineService}
+
                         </div>
                       ) : null}
 
@@ -1497,9 +1399,9 @@ export default function Home() {
 
       </section>
 
-      {/* =================================================
-          IMPORTANT DATES
-          ================================================= */}
+      {/* =====================================================
+          IMPORTANT NATIONAL DATES
+      ====================================================== */}
 
       <section className="bg-white py-20 sm:py-24">
 
@@ -1507,7 +1409,7 @@ export default function Home() {
 
           <div className="text-center">
 
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0B3D91]">
               {t.nationalCalendar}
             </p>
 
@@ -1536,9 +1438,11 @@ export default function Home() {
 
                     <div className="flex gap-4">
 
-                      <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                      <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91]">
 
-                        <CalendarDays size={21} />
+                        <CalendarDays
+                          size={21}
+                        />
 
                         <span className="mt-1 text-[10px] font-black uppercase">
                           {event.month ||
@@ -1553,15 +1457,17 @@ export default function Home() {
                           {getName(event)}
                         </h3>
 
-                        <p className="mt-1 text-sm leading-6 text-slate-500">
+                        <p className="mt-1 line-clamp-3 text-sm leading-6 text-slate-500">
                           {getDescription(
                             event
                           )}
                         </p>
 
-                        {event.date && (
-                          <p className="mt-3 text-xs font-bold text-blue-600">
-                            {event.date}
+                        {event.startDate && (
+                          <p className="mt-3 text-xs font-bold text-[#0B3D91]">
+                            {new Date(
+                              event.startDate
+                            ).toLocaleDateString()}
                           </p>
                         )}
 
@@ -1593,9 +1499,9 @@ export default function Home() {
 
       </section>
 
-      {/* =================================================
+      {/* =====================================================
           MINISTRIES
-          ================================================= */}
+      ====================================================== */}
 
       <section
         id="ministries"
@@ -1608,7 +1514,7 @@ export default function Home() {
 
             <div>
 
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0B3D91]">
                 {t.federalGovernment}
               </p>
 
@@ -1623,12 +1529,14 @@ export default function Home() {
             </div>
 
             <button
+              type="button"
               onClick={() =>
                 navigate("/ministries")
               }
-              className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800"
+              className="flex items-center gap-2 text-sm font-bold text-[#0B3D91] hover:text-[#082F70]"
             >
               {t.viewAllServices}
+
               <ChevronRight size={17} />
             </button>
 
@@ -1641,15 +1549,23 @@ export default function Home() {
                 .slice(0, 9)
                 .map(
                   (ministry, index) => (
-                    <div
+                    <button
+                      type="button"
                       key={
                         getId(ministry) ||
                         index
                       }
-                      className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-blue-200 hover:shadow-lg"
+                      onClick={() =>
+                        navigate(
+                          `/ministries/${getId(
+                            ministry
+                          )}`
+                        )
+                      }
+                      className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:border-blue-200 hover:shadow-lg"
                     >
 
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 transition group-hover:bg-blue-600 group-hover:text-white">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91] transition group-hover:bg-[#0B3D91] group-hover:text-white">
                         <Building2 size={21} />
                       </div>
 
@@ -1659,7 +1575,7 @@ export default function Home() {
                           {getName(ministry)}
                         </h3>
 
-                        <p className="mt-1 line-clamp-1 text-sm text-slate-500">
+                        <p className="mt-1 line-clamp-2 text-sm text-slate-500">
                           {getDescription(
                             ministry
                           )}
@@ -1669,10 +1585,10 @@ export default function Home() {
 
                       <ChevronRight
                         size={18}
-                        className="shrink-0 text-slate-300 group-hover:text-blue-600"
+                        className="shrink-0 text-slate-300 group-hover:text-[#0B3D91]"
                       />
 
-                    </div>
+                    </button>
                   )
                 )
             ) : (
@@ -1696,9 +1612,9 @@ export default function Home() {
 
       </section>
 
-      {/* =================================================
+      {/* =====================================================
           AGENCIES
-          ================================================= */}
+      ====================================================== */}
 
       <section
         id="agencies"
@@ -1709,7 +1625,7 @@ export default function Home() {
 
           <div className="text-center">
 
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0B3D91]">
               {t.nationalInstitutions}
             </p>
 
@@ -1738,7 +1654,7 @@ export default function Home() {
                       className="group rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl"
                     >
 
-                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 transition group-hover:bg-blue-600 group-hover:text-white">
+                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91] transition group-hover:bg-[#0B3D91] group-hover:text-white">
                         <Landmark size={24} />
                       </div>
 
@@ -1776,13 +1692,13 @@ export default function Home() {
 
       </section>
 
-      {/* =================================================
-          EMERGENCY
-          ================================================= */}
+      {/* =====================================================
+          EMERGENCY CONTACTS
+      ====================================================== */}
 
       <section
         id="emergency"
-        className="bg-gradient-to-br from-[#0b5cab] to-[#0878c9] py-20"
+        className="bg-gradient-to-br from-[#0B3D91] to-[#1261B5] py-20"
       >
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -1810,48 +1726,48 @@ export default function Home() {
               emergencyContacts
                 .slice(0, 8)
                 .map(
-                  (contact, index) => (
-                    <a
-                      key={
-                        getId(contact) ||
-                        index
-                      }
-                      href={`tel:${
-                        contact.phone ||
-                        contact.phone_number ||
-                        contact.phoneNumber ||
-                        contact.number ||
-                        ""
-                      }`}
-                      className="group rounded-3xl border border-white/15 bg-white/10 p-6 text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white hover:text-slate-900"
-                    >
+                  (contact, index) => {
+                    const phone =
+                      contact.phone ||
+                      contact.phone_number ||
+                      contact.phoneNumber ||
+                      contact.number ||
+                      "";
 
-                      <div className="flex items-center gap-4">
+                    return (
+                      <a
+                        key={
+                          getId(contact) ||
+                          index
+                        }
+                        href={`tel:${phone}`}
+                        className="group rounded-3xl border border-white/15 bg-white/10 p-6 text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white hover:text-slate-900"
+                      >
 
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-white group-hover:bg-blue-50 group-hover:text-blue-600">
-                          <Phone size={22} />
+                        <div className="flex items-center gap-4">
+
+                          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-white group-hover:bg-blue-50 group-hover:text-[#0B3D91]">
+                            <Phone size={22} />
+                          </div>
+
+                          <div className="min-w-0">
+
+                            <h3 className="truncate font-black">
+                              {getName(contact)}
+                            </h3>
+
+                            <p className="mt-1 text-sm font-bold opacity-80">
+                              {phone ||
+                                "N/A"}
+                            </p>
+
+                          </div>
+
                         </div>
 
-                        <div>
-
-                          <h3 className="font-black">
-                            {getName(contact)}
-                          </h3>
-
-                          <p className="mt-1 text-sm font-bold opacity-80">
-                            {contact.phone ||
-                              contact.phone_number ||
-                              contact.phoneNumber ||
-                              contact.number ||
-                              "N/A"}
-                          </p>
-
-                        </div>
-
-                      </div>
-
-                    </a>
-                  )
+                      </a>
+                    );
+                  }
                 )
             ) : (
               <div className="col-span-full rounded-3xl border border-white/20 bg-white/10 p-10 text-center text-white">
@@ -1874,9 +1790,9 @@ export default function Home() {
 
       </section>
 
-      {/* =================================================
+      {/* =====================================================
           EVENTS
-          ================================================= */}
+      ====================================================== */}
 
       <section
         id="events"
@@ -1887,7 +1803,7 @@ export default function Home() {
 
           <div>
 
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0B3D91]">
               {t.latestUpdates}
             </p>
 
@@ -1915,6 +1831,8 @@ export default function Home() {
                       }
                       className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
                     >
+
+                      {/* EVENT IMAGE */}
 
                       {event.image ||
                       event.imageUrl ||
@@ -1948,14 +1866,17 @@ export default function Home() {
 
                       <div className="p-6">
 
-                        <div className="flex items-center gap-2 text-xs font-bold text-blue-600">
+                        <div className="flex items-center gap-2 text-xs font-bold text-[#0B3D91]">
 
                           <CalendarDays
                             size={14}
                           />
 
-                          {event.date ||
-                            "Government Event"}
+                          {event.startDate
+                            ? new Date(
+                                event.startDate
+                              ).toLocaleDateString()
+                            : "Government Event"}
 
                         </div>
 
@@ -1969,13 +1890,18 @@ export default function Home() {
                           )}
                         </p>
 
-                        {(event.url ||
-                          event.link) && (
+                        {event.external_url ||
+                        event.externalUrl ||
+                        event.url ||
+                        event.link ? (
                           <button
-                            className="mt-5 flex items-center gap-2 text-sm font-bold text-blue-600"
+                            type="button"
+                            className="mt-5 flex items-center gap-2 text-sm font-bold text-[#0B3D91]"
                             onClick={() =>
                               window.open(
-                                event.url ||
+                                event.external_url ||
+                                  event.externalUrl ||
+                                  event.url ||
                                   event.link,
                                 "_blank",
                                 "noopener,noreferrer"
@@ -1983,11 +1909,12 @@ export default function Home() {
                             }
                           >
                             {t.learnMore}
+
                             <ArrowRight
                               size={15}
                             />
                           </button>
-                        )}
+                        ) : null}
 
                       </div>
 
@@ -2015,9 +1942,9 @@ export default function Home() {
 
       </section>
 
-      {/* =================================================
+      {/* =====================================================
           ABOUT / CTA
-          ================================================= */}
+      ====================================================== */}
 
       <section
         id="about"
@@ -2026,25 +1953,37 @@ export default function Home() {
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-          <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#123c2f] via-[#174936] to-[#0b2c23] px-7 py-12 text-white shadow-2xl sm:px-12 lg:px-16 lg:py-16">
+          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#0B3D91] via-[#1261B5] to-[#0878C9] px-7 py-12 text-white shadow-2xl sm:px-12 lg:px-16 lg:py-16">
 
-            <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto]">
+            {/* Decorative circles */}
+
+            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+
+            <div className="absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-cyan-300/10 blur-3xl" />
+
+            <div className="relative grid items-center gap-10 lg:grid-cols-[1fr_auto]">
 
               <div>
 
                 <div className="flex items-center gap-3">
 
-                  <img
-                    src={SOMALIA_LOGO}
-                    alt="Somalia"
-                    className="h-14 w-14 object-contain"
-                    onError={getImageFallback}
-                  />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-lg">
+
+                    <img
+                      src={SOMALIA_LOGO}
+                      alt="Somalia"
+                      className="h-11 w-11 object-contain"
+                      onError={
+                        getImageFallback
+                      }
+                    />
+
+                  </div>
 
                   <div>
 
-                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-200">
-                      Federal Republic of Somalia
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-100">
+                      {t.federal}
                     </p>
 
                     <h2 className="mt-1 text-2xl font-black sm:text-3xl">
@@ -2055,19 +1994,41 @@ export default function Home() {
 
                 </div>
 
-                <p className="mt-6 max-w-2xl leading-7 text-emerald-50/80">
+                <p className="mt-6 max-w-2xl leading-7 text-blue-50/90">
                   {t.footerDescription}
                 </p>
+
+                <div className="mt-6 flex flex-wrap gap-3">
+
+                  <div className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold">
+                    🇸🇴 Somalia
+                  </div>
+
+                  <div className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold">
+                    <ShieldCheck
+                      size={15}
+                      className="mr-1 inline"
+                    />
+                    Secure
+                  </div>
+
+                  <div className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold">
+                    Digital Services
+                  </div>
+
+                </div>
 
               </div>
 
               <button
+                type="button"
                 onClick={() =>
                   scrollTo("services")
                 }
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-4 font-black text-[#123c2f] shadow-xl transition hover:-translate-y-1"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-4 font-black text-[#0B3D91] shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
               >
                 {t.exploreServices}
+
                 <ArrowRight size={18} />
               </button>
 
@@ -2079,9 +2040,9 @@ export default function Home() {
 
       </section>
 
-      {/* =================================================
+      {/* =====================================================
           FOOTER
-          ================================================= */}
+      ====================================================== */}
 
       <footer className="border-t border-slate-200 bg-white">
 
@@ -2095,20 +2056,26 @@ export default function Home() {
 
               <div className="flex items-center gap-3">
 
-                <img
-                  src={SOMALIA_LOGO}
-                  alt="Somalia"
-                  className="h-14 w-14 object-contain"
-                  onError={getImageFallback}
-                />
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-200">
+
+                  <img
+                    src={SOMALIA_LOGO}
+                    alt="Somalia"
+                    className="h-11 w-11 object-contain"
+                    onError={
+                      getImageFallback
+                    }
+                  />
+
+                </div>
 
                 <div>
 
-                  <p className="font-black text-[#123c2f]">
+                  <p className="font-black text-[#0B3D91]">
                     FEDERAL REPUBLIC
                   </p>
 
-                  <p className="text-xs font-semibold text-slate-500">
+                  <p className="text-xs font-semibold tracking-[0.15em] text-slate-500">
                     OF SOMALIA
                   </p>
 
@@ -2133,37 +2100,41 @@ export default function Home() {
               <div className="mt-4 space-y-3">
 
                 <button
+                  type="button"
                   onClick={() =>
                     scrollTo("services")
                   }
-                  className="block text-sm text-slate-500 hover:text-blue-600"
+                  className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.services}
                 </button>
 
                 <button
+                  type="button"
                   onClick={() =>
                     scrollTo("ministries")
                   }
-                  className="block text-sm text-slate-500 hover:text-blue-600"
+                  className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.ministries}
                 </button>
 
                 <button
+                  type="button"
                   onClick={() =>
                     scrollTo("agencies")
                   }
-                  className="block text-sm text-slate-500 hover:text-blue-600"
+                  className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.agencies}
                 </button>
 
                 <button
+                  type="button"
                   onClick={() =>
                     scrollTo("events")
                   }
-                  className="block text-sm text-slate-500 hover:text-blue-600"
+                  className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.events}
                 </button>
@@ -2183,30 +2154,43 @@ export default function Home() {
               <div className="mt-4 space-y-3">
 
                 <button
+                  type="button"
                   onClick={() =>
                     scrollTo("leadership")
                   }
-                  className="block text-sm text-slate-500 hover:text-blue-600"
+                  className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.leadership}
                 </button>
 
                 <button
+                  type="button"
                   onClick={() =>
                     scrollTo("ministries")
                   }
-                  className="block text-sm text-slate-500 hover:text-blue-600"
+                  className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.federalMinistries}
                 </button>
 
                 <button
+                  type="button"
                   onClick={() =>
                     scrollTo("agencies")
                   }
-                  className="block text-sm text-slate-500 hover:text-blue-600"
+                  className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.nationalAgencies}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    scrollTo("emergency")
+                  }
+                  className="block text-sm text-slate-500 hover:text-[#0B3D91]"
+                >
+                  {t.emergency}
                 </button>
 
               </div>
@@ -2224,25 +2208,40 @@ export default function Home() {
               <div className="mt-4 space-y-3">
 
                 <button
-                  className="block text-sm text-slate-500 hover:text-blue-600"
+                  type="button"
+                  className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.privacy}
                 </button>
 
                 <button
-                  className="block text-sm text-slate-500 hover:text-blue-600"
+                  type="button"
+                  className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.terms}
                 </button>
 
                 <button
+                  type="button"
                   onClick={() =>
                     scrollTo("emergency")
                   }
-                  className="block text-sm text-slate-500 hover:text-blue-600"
+                  className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
-                  {t.emergency}
+                  {t.contact}
                 </button>
+
+                {!user && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate("/register")
+                    }
+                    className="block text-sm font-bold text-[#0B3D91]"
+                  >
+                    {t.register}
+                  </button>
+                )}
 
               </div>
 
@@ -2255,8 +2254,7 @@ export default function Home() {
           <div className="mt-12 flex flex-col gap-4 border-t border-slate-200 pt-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
 
             <p>
-              ©{" "}
-              {new Date().getFullYear()}{" "}
+              © {new Date().getFullYear()}{" "}
               Federal Republic of Somalia.{" "}
               {t.rights}
             </p>
@@ -2269,7 +2267,9 @@ export default function Home() {
               />
 
               <span>
-                Peace, Progress, and Prosperity
+                {language === "so"
+                  ? "Nabad, Horumar iyo Barwaaqo"
+                  : "Peace, Progress, and Prosperity"}
               </span>
 
             </div>
