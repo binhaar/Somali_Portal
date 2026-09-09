@@ -1,16 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-// ==============================
-// PUBLIC PAGES
-// ==============================
-
 import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-
-// ==============================
-// ADMIN
-// ==============================
+import Contact from "./pages/Contact";
 
 import AdminRoute from "./components/AdminRoute";
 import AdminLayout from "./layouts/AdminLayout";
@@ -28,49 +21,18 @@ import Events from "./pages/admin/Events";
 import EmergencyContacts from "./pages/admin/EmergencyContacts";
 import Settings from "./pages/admin/Settings";
 
-
 function App() {
   return (
     <Routes>
+      {/* Public Pages */}
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/contact" element={<Contact />} />
 
-      {/* =========================================
-          PUBLIC HOME
-      ========================================= */}
-
-      <Route
-        path="/"
-        element={<Home />}
-      />
-
-      {/* =========================================
-          AUTHENTICATION
-      ========================================= */}
-
-      <Route
-        path="/login"
-        element={<Login />}
-      />
-
-      <Route
-        path="/register"
-        element={<Register />}
-      />
-
-      {/* =========================================
-          ADMIN AREA
-      ========================================= */}
-
-      <Route
-        path="/admin"
-        element={<AdminRoute />}
-      >
-        <Route
-          element={<AdminLayout />}
-        >
-
-          {/* /admin */}
-          {/* automatically redirects to dashboard */}
-
+      {/* Admin Pages */}
+      <Route path="/admin" element={<AdminRoute />}>
+        <Route element={<AdminLayout />}>
           <Route
             index
             element={
@@ -81,87 +43,73 @@ function App() {
             }
           />
 
-          {/* Dashboard */}
-
           <Route
             path="dashboard"
             element={<AdminDashboard />}
           />
-
-          {/* Users */}
 
           <Route
             path="users"
             element={<Users />}
           />
 
-          {/* Services */}
-
           <Route
             path="services"
             element={<Services />}
           />
-
-          {/* Categories */}
 
           <Route
             path="categories"
             element={<Categories />}
           />
 
-          {/* Ministries */}
-
           <Route
             path="ministries"
             element={<Ministries />}
           />
-
-          {/* Agencies */}
 
           <Route
             path="agencies"
             element={<Agencies />}
           />
 
-          {/* Provinces */}
-
           <Route
             path="provinces"
             element={<Provinces />}
           />
-          <Route path="settings" element={<Settings />} />
-
-          {/* Cabinet */}
 
           <Route
             path="cabinet"
             element={<Cabinet />}
           />
-          <Route path="news" element={<News />} />
 
-          <Route path="events" element={<Events />} />
           <Route
-          path="emergency-contacts"
-            element={<EmergencyContacts />}
-           />
+            path="news"
+            element={<News />}
+          />
 
+          <Route
+            path="events"
+            element={<Events />}
+          />
+
+          <Route
+            path="emergency-contacts"
+            element={<EmergencyContacts />}
+          />
+
+          <Route
+            path="settings"
+            element={<Settings />}
+          />
         </Route>
       </Route>
 
-      {/* =========================================
-          UNKNOWN ROUTES
-      ========================================= */}
-
+      {/* 404 */}
       <Route
         path="*"
-        element={
-          <Navigate
-            to="/"
-            replace
-          />
-        }
+        element={<Navigate to="/" replace />}
       />
-
     </Routes>
   );
 }

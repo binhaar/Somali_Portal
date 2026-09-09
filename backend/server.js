@@ -20,6 +20,7 @@ const searchRoutes = require("./routes/searchRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const adminUserRoutes = require("./routes/adminUserRoutes");
 const settingRoutes = require("./routes/settingRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 
 const app = express();
 
@@ -80,6 +81,7 @@ app.use("/api/search", searchRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/users", adminUserRoutes);
 app.use("/api/settings", settingRoutes);
+app.use("/api/contact", contactRoutes);
 
 /* =========================
    ROOT ROUTE

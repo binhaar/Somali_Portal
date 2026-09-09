@@ -13,7 +13,9 @@ import {
   FileText,
   Building2,
   MapPinned,
+  MessageSquare,
 } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 
 const SOMALIA_LOGO =
@@ -25,7 +27,6 @@ export default function Navbar({
   user,
   logout,
   scrollTo,
-  t,
   getImageFallback,
 }) {
   const navigate = useNavigate();
@@ -36,6 +37,10 @@ export default function Navbar({
 
   const isSomali = language === "so";
 
+  /* =====================================================
+     TRANSLATIONS
+  ====================================================== */
+
   const labels = {
     en: {
       home: "Home",
@@ -43,39 +48,72 @@ export default function Navbar({
       government: "Government",
       services: "Services",
       contact: "Contact",
+
       constitution: "Constitution",
       vision: "National Vision 2060",
       memberStates: "Member States",
+
       executive: "Executive Leadership",
       ministries: "Federal Ministries",
       agencies: "National Agencies",
+
       login: "Login",
       register: "Register",
       dashboard: "Dashboard",
       logout: "Logout",
       language: "Language",
     },
+
     so: {
       home: "Bogga Hore",
       nation: "Qaranka",
       government: "Dowladda",
       services: "Adeegyada",
       contact: "Xiriir",
+
       constitution: "Dastuurka",
       vision: "Himilada Qaranka 2060",
       memberStates: "Dowlad Goboleedyada",
+
       executive: "Hoggaanka Dowladda",
       ministries: "Wasaaradaha Federaalka",
       agencies: "Hay'adaha Qaranka",
+
       login: "Gal",
       register: "Isdiiwaangeli",
       dashboard: "Dashboard",
       logout: "Ka bax",
       language: "Luqad",
     },
+
+    ar: {
+      home: "الرئيسية",
+      nation: "الوطن",
+      government: "الحكومة",
+      services: "الخدمات",
+      contact: "اتصل بنا",
+
+      constitution: "الدستور",
+      vision: "الرؤية الوطنية 2060",
+      memberStates: "الولايات الأعضاء",
+
+      executive: "القيادة التنفيذية",
+      ministries: "الوزارات الاتحادية",
+      agencies: "الوكالات الوطنية",
+
+      login: "تسجيل الدخول",
+      register: "إنشاء حساب",
+      dashboard: "لوحة التحكم",
+      logout: "تسجيل الخروج",
+      language: "اللغة",
+    },
   };
 
   const l = labels[language] || labels.en;
+
+  /* =====================================================
+     CLOSE MENUS
+  ====================================================== */
 
   const closeMenus = () => {
     setOpenMenu(null);
@@ -83,21 +121,31 @@ export default function Navbar({
     setMobileOpen(false);
   };
 
+  /* =====================================================
+     SCROLL
+  ====================================================== */
+
   const handleScroll = (id) => {
     closeMenus();
 
     if (typeof scrollTo === "function") {
       scrollTo(id);
-    } else {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
+      return;
+    }
+
+    const element = document.getElementById(id);
+
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
   };
+
+  /* =====================================================
+     HOME
+  ====================================================== */
 
   const handleHome = () => {
     closeMenus();
@@ -112,6 +160,19 @@ export default function Navbar({
     }
   };
 
+  /* =====================================================
+     CONTACT
+  ====================================================== */
+
+  const handleContact = () => {
+    closeMenus();
+    navigate("/contact");
+  };
+
+  /* =====================================================
+     LANGUAGE
+  ====================================================== */
+
   const handleLanguage = (value) => {
     if (typeof setLanguage === "function") {
       setLanguage(value);
@@ -119,6 +180,10 @@ export default function Navbar({
 
     closeMenus();
   };
+
+  /* =====================================================
+     LOGOUT
+  ====================================================== */
 
   const handleLogout = async () => {
     closeMenus();
@@ -130,17 +195,23 @@ export default function Navbar({
     navigate("/");
   };
 
+  /* =====================================================
+     NATION MENU
+  ====================================================== */
+
   const nationItems = [
     {
       label: l.constitution,
       icon: FileText,
       action: () => handleScroll("about"),
     },
+
     {
       label: l.vision,
       icon: Landmark,
       action: () => handleScroll("about"),
     },
+
     {
       label: l.memberStates,
       icon: MapPinned,
@@ -148,17 +219,25 @@ export default function Navbar({
     },
   ];
 
+  /* =====================================================
+     GOVERNMENT MENU
+
+     Cabinet + Parliament intentionally removed
+  ====================================================== */
+
   const governmentItems = [
     {
       label: l.executive,
       icon: Landmark,
       action: () => handleScroll("leadership"),
     },
+
     {
       label: l.ministries,
       icon: Building2,
       action: () => handleScroll("ministries"),
     },
+
     {
       label: l.agencies,
       icon: BriefcaseBusiness,
@@ -166,8 +245,14 @@ export default function Navbar({
     },
   ];
 
+  /* =====================================================
+     DROPDOWN
+  ====================================================== */
+
   const renderDropdown = (menuName, items) => {
-    if (openMenu !== menuName) return null;
+    if (openMenu !== menuName) {
+      return null;
+    }
 
     return (
       <div
@@ -212,7 +297,19 @@ export default function Navbar({
                 hover:text-[#0B3D91]
               "
             >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-[#0B3D91]">
+              <span
+                className="
+                  flex
+                  h-9
+                  w-9
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-lg
+                  bg-slate-50
+                  text-[#0B3D91]
+                "
+              >
                 <Icon size={17} />
               </span>
 
@@ -225,39 +322,65 @@ export default function Navbar({
   };
 
   return (
-    <header className="sticky top-0 z-[100] border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+    <header
+      className="
+        sticky
+        top-0
+        z-[100]
+        border-b
+        border-slate-200
+        bg-white/95
+        shadow-sm
+        backdrop-blur
+      "
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+        {/* =================================================
+            MAIN NAVBAR
+        ================================================== */}
+
         <div className="flex h-20 items-center justify-between">
 
-          {/* LOGO */}
+          {/* =================================================
+              LOGO
+          ================================================== */}
+
           <button
             type="button"
             onClick={handleHome}
             className="flex items-center gap-3"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0B3D91] p-1.5 shadow-md">
-              <img
-                src={SOMALIA_LOGO}
-                alt="Federal Government of Somalia"
-                className="h-full w-full object-contain"
-                onError={getImageFallback}
-              />
+           <div className="flex h-14 w-14 items-center justify-center">
+             <img
+               src={SOMALIA_LOGO}
+               alt="Federal Government of Somalia"
+               className="h-full w-full object-contain"
+               onError={getImageFallback}
+                />
             </div>
 
             <div className="hidden text-left sm:block">
               <p className="text-sm font-black leading-tight text-[#0B3D91]">
                 Federal Government
               </p>
+
               <p className="text-xs font-semibold text-slate-500">
-                {isSomali ? "Jamhuuriyadda Federaalka Soomaaliya" : "of Somalia"}
+                {isSomali
+                  ? "Jamhuuriyadda Federaalka Soomaaliya"
+                  : "of Somalia"}
               </p>
             </div>
           </button>
 
-          {/* DESKTOP NAVIGATION */}
+          {/* =================================================
+              DESKTOP NAVIGATION
+          ================================================== */}
+
           <nav className="hidden items-center gap-1 lg:flex">
 
             {/* HOME */}
+
             <button
               type="button"
               onClick={handleHome}
@@ -276,13 +399,18 @@ export default function Navbar({
               {l.home}
             </button>
 
-            {/* NATION */}
+            {/* =================================================
+                THE NATION
+            ================================================== */}
+
             <div className="relative">
               <button
                 type="button"
                 onClick={() =>
                   setOpenMenu(
-                    openMenu === "nation" ? null : "nation"
+                    openMenu === "nation"
+                      ? null
+                      : "nation"
                   )
                 }
                 className="
@@ -301,6 +429,7 @@ export default function Navbar({
                 "
               >
                 {l.nation}
+
                 <ChevronDown
                   size={15}
                   className={
@@ -311,10 +440,16 @@ export default function Navbar({
                 />
               </button>
 
-              {renderDropdown("nation", nationItems)}
+              {renderDropdown(
+                "nation",
+                nationItems
+              )}
             </div>
 
-            {/* GOVERNMENT */}
+            {/* =================================================
+                GOVERNMENT
+            ================================================== */}
+
             <div className="relative">
               <button
                 type="button"
@@ -341,6 +476,7 @@ export default function Navbar({
                 "
               >
                 {l.government}
+
                 <ChevronDown
                   size={15}
                   className={
@@ -357,10 +493,15 @@ export default function Navbar({
               )}
             </div>
 
-            {/* SERVICES */}
+            {/* =================================================
+                SERVICES
+            ================================================== */}
+
             <button
               type="button"
-              onClick={() => handleScroll("services")}
+              onClick={() =>
+                handleScroll("services")
+              }
               className="
                 rounded-xl
                 px-4
@@ -376,10 +517,13 @@ export default function Navbar({
               {l.services}
             </button>
 
-            {/* CONTACT */}
+            {/* =================================================
+                CONTACT
+            ================================================== */}
+
             <button
               type="button"
-              onClick={() => handleScroll("contact")}
+              onClick={handleContact}
               className="
                 rounded-xl
                 px-4
@@ -394,14 +538,20 @@ export default function Navbar({
             >
               {l.contact}
             </button>
-
           </nav>
 
-          {/* RIGHT SIDE */}
+          {/* =================================================
+              RIGHT SIDE
+          ================================================== */}
+
           <div className="hidden items-center gap-2 lg:flex">
 
-            {/* LANGUAGE */}
+            {/* =================================================
+                LANGUAGE
+            ================================================== */}
+
             <div className="relative">
+
               <button
                 type="button"
                 onClick={() =>
@@ -430,11 +580,13 @@ export default function Navbar({
                 "
               >
                 <Globe2 size={17} />
+
                 {language === "so"
                   ? "SO"
                   : language === "ar"
                   ? "AR"
                   : "EN"}
+
                 <ChevronDown size={14} />
               </button>
 
@@ -463,7 +615,9 @@ export default function Navbar({
                     <button
                       key={code}
                       type="button"
-                      onClick={() => handleLanguage(code)}
+                      onClick={() =>
+                        handleLanguage(code)
+                      }
                       className={`
                         w-full
                         rounded-xl
@@ -473,6 +627,7 @@ export default function Navbar({
                         text-sm
                         font-semibold
                         transition
+
                         ${
                           language === code
                             ? "bg-blue-50 text-[#0B3D91]"
@@ -487,12 +642,19 @@ export default function Navbar({
               )}
             </div>
 
-            {/* AUTH */}
+            {/* =================================================
+                AUTH
+            ================================================== */}
+
             {!user ? (
               <>
+                {/* LOGIN */}
+
                 <button
                   type="button"
-                  onClick={() => navigate("/login")}
+                  onClick={() =>
+                    navigate("/login")
+                  }
                   className="
                     flex
                     items-center
@@ -508,12 +670,17 @@ export default function Navbar({
                   "
                 >
                   <LogIn size={17} />
+
                   {l.login}
                 </button>
 
+                {/* REGISTER */}
+
                 <button
                   type="button"
-                  onClick={() => navigate("/register")}
+                  onClick={() =>
+                    navigate("/register")
+                  }
                   className="
                     rounded-xl
                     bg-[#0B3D91]
@@ -533,10 +700,15 @@ export default function Navbar({
               </>
             ) : (
               <div className="relative">
+
+                {/* USER BUTTON */}
+
                 <button
                   type="button"
                   onClick={() =>
-                    setUserMenuOpen(!userMenuOpen)
+                    setUserMenuOpen(
+                      !userMenuOpen
+                    )
                   }
                   className="
                     flex
@@ -551,11 +723,30 @@ export default function Navbar({
                     hover:bg-blue-50
                   "
                 >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-[#0B3D91]">
+                  <span
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-blue-50
+                      text-[#0B3D91]
+                    "
+                  >
                     <UserRound size={18} />
                   </span>
 
-                  <span className="max-w-[130px] truncate text-sm font-bold text-slate-700">
+                  <span
+                    className="
+                      max-w-[130px]
+                      truncate
+                      text-sm
+                      font-bold
+                      text-slate-700
+                    "
+                  >
                     {user.firstName ||
                       user.username ||
                       "User"}
@@ -570,6 +761,8 @@ export default function Navbar({
                     }
                   />
                 </button>
+
+                {/* USER DROPDOWN */}
 
                 {userMenuOpen && (
                   <div
@@ -588,24 +781,35 @@ export default function Navbar({
                       shadow-2xl
                     "
                   >
+
+                    {/* USER INFO */}
+
                     <div className="border-b border-slate-100 px-3 py-3">
+
                       <p className="text-sm font-black text-slate-900">
                         {user.firstName
-                          ? `${user.firstName} ${user.lastName || ""}`
+                          ? `${user.firstName} ${
+                              user.lastName || ""
+                            }`
                           : user.username}
                       </p>
 
                       <p className="mt-1 truncate text-xs text-slate-500">
                         {user.email}
                       </p>
+
                     </div>
+
+                    {/* ADMIN DASHBOARD */}
 
                     {user.role === "ADMIN" && (
                       <button
                         type="button"
                         onClick={() => {
                           closeMenus();
-                          navigate("/admin/dashboard");
+                          navigate(
+                            "/admin/dashboard"
+                          );
                         }}
                         className="
                           mt-2
@@ -625,10 +829,15 @@ export default function Navbar({
                           hover:text-[#0B3D91]
                         "
                       >
-                        <LayoutDashboard size={17} />
+                        <LayoutDashboard
+                          size={17}
+                        />
+
                         {l.dashboard}
                       </button>
                     )}
+
+                    {/* LOGOUT */}
 
                     <button
                       type="button"
@@ -650,18 +859,25 @@ export default function Navbar({
                       "
                     >
                       <LogOut size={17} />
+
                       {l.logout}
                     </button>
+
                   </div>
                 )}
               </div>
             )}
           </div>
 
-          {/* MOBILE BUTTON */}
+          {/* =================================================
+              MOBILE BUTTON
+          ================================================== */}
+
           <button
             type="button"
-            onClick={() => setMobileOpen(!mobileOpen)}
+            onClick={() =>
+              setMobileOpen(!mobileOpen)
+            }
             className="
               flex
               h-11
@@ -688,11 +904,24 @@ export default function Navbar({
 
         </div>
 
-        {/* MOBILE MENU */}
+        {/* =================================================
+            MOBILE MENU
+        ================================================== */}
+
         {mobileOpen && (
-          <div className="border-t border-slate-100 pb-5 pt-4 lg:hidden">
+          <div
+            className="
+              border-t
+              border-slate-100
+              pb-5
+              pt-4
+              lg:hidden
+            "
+          >
 
             <div className="space-y-1">
+
+              {/* HOME */}
 
               <button
                 type="button"
@@ -714,13 +943,18 @@ export default function Navbar({
                 {l.home}
               </button>
 
-              {/* MOBILE NATION */}
+              {/* =================================================
+                  MOBILE NATION
+              ================================================== */}
+
               <div>
+
                 <button
                   type="button"
                   onClick={() =>
                     setOpenMenu(
-                      openMenu === "mobileNation"
+                      openMenu ===
+                        "mobileNation"
                         ? null
                         : "mobileNation"
                     )
@@ -741,54 +975,81 @@ export default function Navbar({
                   "
                 >
                   {l.nation}
+
                   <ChevronDown
                     size={16}
                     className={
-                      openMenu === "mobileNation"
+                      openMenu ===
+                      "mobileNation"
                         ? "rotate-180 transition"
                         : "transition"
                     }
                   />
                 </button>
 
-                {openMenu === "mobileNation" && (
-                  <div className="ml-4 mt-1 space-y-1 border-l-2 border-blue-100 pl-2">
-                    {nationItems.map((item) => (
-                      <button
-                        key={item.label}
-                        type="button"
-                        onClick={item.action}
-                        className="
-                          flex
-                          w-full
-                          items-center
-                          gap-3
-                          rounded-xl
-                          px-3
-                          py-2.5
-                          text-left
-                          text-sm
-                          font-semibold
-                          text-slate-600
-                          hover:bg-blue-50
-                          hover:text-[#0B3D91]
-                        "
-                      >
-                        <item.icon size={16} />
-                        {item.label}
-                      </button>
-                    ))}
+                {openMenu ===
+                  "mobileNation" && (
+                  <div
+                    className="
+                      ml-4
+                      mt-1
+                      space-y-1
+                      border-l-2
+                      border-blue-100
+                      pl-2
+                    "
+                  >
+                    {nationItems.map(
+                      (item) => {
+                        const Icon =
+                          item.icon;
+
+                        return (
+                          <button
+                            key={item.label}
+                            type="button"
+                            onClick={
+                              item.action
+                            }
+                            className="
+                              flex
+                              w-full
+                              items-center
+                              gap-3
+                              rounded-xl
+                              px-3
+                              py-2.5
+                              text-left
+                              text-sm
+                              font-semibold
+                              text-slate-600
+                              hover:bg-blue-50
+                              hover:text-[#0B3D91]
+                            "
+                          >
+                            <Icon size={16} />
+
+                            {item.label}
+                          </button>
+                        );
+                      }
+                    )}
                   </div>
                 )}
               </div>
 
-              {/* MOBILE GOVERNMENT */}
+              {/* =================================================
+                  MOBILE GOVERNMENT
+              ================================================== */}
+
               <div>
+
                 <button
                   type="button"
                   onClick={() =>
                     setOpenMenu(
-                      openMenu === "mobileGovernment"
+                      openMenu ===
+                        "mobileGovernment"
                         ? null
                         : "mobileGovernment"
                     )
@@ -809,50 +1070,76 @@ export default function Navbar({
                   "
                 >
                   {l.government}
+
                   <ChevronDown
                     size={16}
                     className={
-                      openMenu === "mobileGovernment"
+                      openMenu ===
+                      "mobileGovernment"
                         ? "rotate-180 transition"
                         : "transition"
                     }
                   />
                 </button>
 
-                {openMenu === "mobileGovernment" && (
-                  <div className="ml-4 mt-1 space-y-1 border-l-2 border-blue-100 pl-2">
-                    {governmentItems.map((item) => (
-                      <button
-                        key={item.label}
-                        type="button"
-                        onClick={item.action}
-                        className="
-                          flex
-                          w-full
-                          items-center
-                          gap-3
-                          rounded-xl
-                          px-3
-                          py-2.5
-                          text-left
-                          text-sm
-                          font-semibold
-                          text-slate-600
-                          hover:bg-blue-50
-                          hover:text-[#0B3D91]
-                        "
-                      >
-                        <item.icon size={16} />
-                        {item.label}
-                      </button>
-                    ))}
+                {openMenu ===
+                  "mobileGovernment" && (
+                  <div
+                    className="
+                      ml-4
+                      mt-1
+                      space-y-1
+                      border-l-2
+                      border-blue-100
+                      pl-2
+                    "
+                  >
+                    {governmentItems.map(
+                      (item) => {
+                        const Icon =
+                          item.icon;
+
+                        return (
+                          <button
+                            key={item.label}
+                            type="button"
+                            onClick={
+                              item.action
+                            }
+                            className="
+                              flex
+                              w-full
+                              items-center
+                              gap-3
+                              rounded-xl
+                              px-3
+                              py-2.5
+                              text-left
+                              text-sm
+                              font-semibold
+                              text-slate-600
+                              hover:bg-blue-50
+                              hover:text-[#0B3D91]
+                            "
+                          >
+                            <Icon size={16} />
+
+                            {item.label}
+                          </button>
+                        );
+                      }
+                    )}
                   </div>
                 )}
               </div>
 
+              {/* SERVICES */}
+
               <button
                 type="button"
-                onClick={() => handleScroll("services")}
+                onClick={() =>
+                  handleScroll("services")
+                }
                 className="
                   flex
                   w-full
@@ -870,12 +1157,16 @@ export default function Navbar({
                 {l.services}
               </button>
 
+              {/* CONTACT */}
+
               <button
                 type="button"
-                onClick={() => handleScroll("contact")}
+                onClick={handleContact}
                 className="
                   flex
                   w-full
+                  items-center
+                  gap-3
                   rounded-xl
                   px-4
                   py-3
@@ -887,18 +1178,42 @@ export default function Navbar({
                   hover:text-[#0B3D91]
                 "
               >
+                <MessageSquare size={17} />
+
                 {l.contact}
               </button>
 
             </div>
 
-            {/* MOBILE LANGUAGE */}
-            <div className="mt-4 border-t border-slate-100 pt-4">
-              <p className="mb-2 px-4 text-xs font-black uppercase tracking-wider text-slate-400">
+            {/* =================================================
+                MOBILE LANGUAGE
+            ================================================== */}
+
+            <div
+              className="
+                mt-4
+                border-t
+                border-slate-100
+                pt-4
+              "
+            >
+
+              <p
+                className="
+                  mb-2
+                  px-4
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-wider
+                  text-slate-400
+                "
+              >
                 {l.language}
               </p>
 
               <div className="grid grid-cols-3 gap-2 px-4">
+
                 {[
                   ["en", "English"],
                   ["so", "Somali"],
@@ -907,7 +1222,9 @@ export default function Navbar({
                   <button
                     key={code}
                     type="button"
-                    onClick={() => handleLanguage(code)}
+                    onClick={() =>
+                      handleLanguage(code)
+                    }
                     className={`
                       rounded-xl
                       border
@@ -916,6 +1233,7 @@ export default function Navbar({
                       text-xs
                       font-bold
                       transition
+
                       ${
                         language === code
                           ? "border-[#0B3D91] bg-blue-50 text-[#0B3D91]"
@@ -926,14 +1244,28 @@ export default function Navbar({
                     {name}
                   </button>
                 ))}
+
               </div>
             </div>
 
-            {/* MOBILE AUTH */}
-            <div className="mt-4 grid gap-2 px-4 sm:grid-cols-2">
+            {/* =================================================
+                MOBILE AUTH
+            ================================================== */}
+
+            <div
+              className="
+                mt-4
+                grid
+                gap-2
+                px-4
+                sm:grid-cols-2
+              "
+            >
 
               {!user ? (
                 <>
+                  {/* LOGIN */}
+
                   <button
                     type="button"
                     onClick={() => {
@@ -957,8 +1289,11 @@ export default function Navbar({
                     "
                   >
                     <LogIn size={17} />
+
                     {l.login}
                   </button>
+
+                  {/* REGISTER */}
 
                   <button
                     type="button"
@@ -985,12 +1320,16 @@ export default function Navbar({
                 </>
               ) : (
                 <>
+                  {/* ADMIN DASHBOARD */}
+
                   {user.role === "ADMIN" && (
                     <button
                       type="button"
                       onClick={() => {
                         closeMenus();
-                        navigate("/admin/dashboard");
+                        navigate(
+                          "/admin/dashboard"
+                        );
                       }}
                       className="
                         flex
@@ -1006,10 +1345,15 @@ export default function Navbar({
                         text-[#0B3D91]
                       "
                     >
-                      <LayoutDashboard size={17} />
+                      <LayoutDashboard
+                        size={17}
+                      />
+
                       {l.dashboard}
                     </button>
                   )}
+
+                  {/* LOGOUT */}
 
                   <button
                     type="button"
@@ -1031,6 +1375,7 @@ export default function Navbar({
                     "
                   >
                     <LogOut size={17} />
+
                     {l.logout}
                   </button>
                 </>
