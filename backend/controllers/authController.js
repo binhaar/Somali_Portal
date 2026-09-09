@@ -16,10 +16,27 @@ const generateToken = (user) => {
   );
 };
 
+/*
+|--------------------------------------------------------------------------
+| COOKIE OPTIONS
+|--------------------------------------------------------------------------
+| Local:
+|   secure: false
+|   sameSite: lax
+|
+| Production:
+|   secure: true
+|   sameSite: none
+|
+| This is required because the frontend is on Vercel
+| and the backend is on Render.
+|--------------------------------------------------------------------------
+*/
+
 const cookieOptions = {
   httpOnly: true,
-  secure: false,
-  sameSite: "lax",
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   path: "/",
 };
 
@@ -154,7 +171,11 @@ const registerUser = async (req, res) => {
 
     const user = await User.create({
       accountType,
-      role: accountType === "CITIZEN" ? "CITIZEN" : "VISITOR",
+
+      role:
+        accountType === "CITIZEN"
+          ? "CITIZEN"
+          : "VISITOR",
 
       username: username.trim(),
       firstName: firstName.trim(),
@@ -189,8 +210,9 @@ const registerUser = async (req, res) => {
       isActive: true,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Account created successfully.",
+
       user: {
         id: user._id,
         accountType: user.accountType,
@@ -204,7 +226,7 @@ const registerUser = async (req, res) => {
   } catch (error) {
     console.error("Register error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Registration failed.",
     });
   }
@@ -258,15 +280,27 @@ const loginUser = async (req, res) => {
     const token = generateToken(user);
 
     /*
-      IMPORTANT:
-      No localStorage.
-      No sessionStorage.
-      JWT is stored inside HttpOnly SESSION COOKIE.
+    |--------------------------------------------------------------------------
+    | PRODUCTION AUTHENTICATION
+    |--------------------------------------------------------------------------
+    | JWT is stored in an HttpOnly cookie.
+    | This allows:
+    |
+    | Vercel frontend
+    |       ↓
+    | Render backend
+    |       ↓
+    | portal_session cookie
+    |--------------------------------------------------------------------------
     */
 
-    res.cookie("portal_session", token, cookieOptions);
+    res.cookie(
+      "portal_session",
+      token,
+      cookieOptions
+    );
 
-    res.json({
+    return res.json({
       message: "Login successful.",
 
       user: {
@@ -286,7 +320,7 @@ const loginUser = async (req, res) => {
   } catch (error) {
     console.error("Login error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Login failed.",
     });
   }
@@ -300,9 +334,9 @@ const loginUser = async (req, res) => {
 
 const getCurrentUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select(
-      "-password"
-    );
+    const user = await User.findById(
+      req.user._id
+    ).select("-password");
 
     if (!user) {
       return res.status(401).json({
@@ -310,13 +344,16 @@ const getCurrentUser = async (req, res) => {
       });
     }
 
-    res.json({
+    return res.json({
       user,
     });
   } catch (error) {
-    console.error("Get current user error:", error);
+    console.error(
+      "Get current user error:",
+      error
+    );
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Failed to get current user.",
     });
   }
@@ -329,17 +366,21 @@ const getCurrentUser = async (req, res) => {
 */
 
 const logoutUser = (req, res) => {
-  res.clearCookie("portal_session", {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    path: "/",
-  });
+  res.clearCookie(
+    "portal_session",
+    cookieOptions
+  );
 
-  res.json({
+  return res.json({
     message: "Logged out successfully.",
   });
 };
+
+/*
+|--------------------------------------------------------------------------
+| EXPORTS
+|--------------------------------------------------------------------------
+*/
 
 module.exports = {
   registerUser,
