@@ -1,7 +1,59 @@
 import React, { useEffect, useState } from "react";
-import { Eye, EyeOff, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  Mail,
+  ShieldCheck,
+  ArrowLeft,
+  Star,
+  Globe2,
+  CheckCircle2,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
+
+
+// =====================================================
+// SOMALIA FLAG
+// =====================================================
+
+function SomaliaFlag({ size = "md" }) {
+  const sizes = {
+    sm: "h-10 w-14",
+    md: "h-14 w-20",
+    lg: "h-16 w-24",
+  };
+
+  return (
+    <div
+      className={`
+        ${sizes[size] || sizes.md}
+        relative
+        flex
+        items-center
+        justify-center
+        overflow-hidden
+        rounded-lg
+        bg-[#4189DD]
+        shadow-lg
+        ring-1
+        ring-white/30
+      `}
+    >
+      <Star
+        className="h-7 w-7 fill-white text-white drop-shadow-sm"
+      />
+
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10" />
+    </div>
+  );
+}
+
+
+// =====================================================
+// LOGIN
+// =====================================================
 
 export default function Login() {
   const navigate = useNavigate();
@@ -18,13 +70,14 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState("");
 
-  /*
-   * Haddii user horey u login-gareeyay
-   * oo uu mar kale galo /login,
-   * ha lagu celin login form-ka.
-   */
+
+  // ===================================================
+  // REDIRECT IF ALREADY AUTHENTICATED
+  // ===================================================
+
   useEffect(() => {
     if (authLoading) return;
 
@@ -48,6 +101,11 @@ export default function Login() {
     navigate,
   ]);
 
+
+  // ===================================================
+  // LOGIN
+  // ===================================================
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -68,36 +126,19 @@ export default function Login() {
     try {
       setLoading(true);
 
-      /*
-       * AuthContext login()
-       * wuxuu sameynayaa API login-ka
-       */
       const response = await login(
         cleanEmail,
         password
       );
 
-      /*
-       * User-ka waxaa laga heli karaa response.user
-       * ama AuthContext user.
-       */
       const loggedInUser =
         response?.user || user;
 
-      /*
-       * Haddii user-ku service ka yimid:
-       *
-       * Home
-       *   ↓
-       * Service
-       *   ↓
-       * Login
-       *   ↓
-       * Service
-       *
-       * pendingServiceUrl waxaa lagu keydiyay
-       * sessionStorage gudaha Home.jsx.
-       */
+
+      // ===============================================
+      // SERVICE REDIRECT
+      // ===============================================
+
       const pendingServiceUrl =
         sessionStorage.getItem(
           "pendingServiceUrl"
@@ -108,10 +149,7 @@ export default function Login() {
           "pendingServiceTitle"
         );
 
-      /*
-       * Haddii service la sugayay,
-       * service-ka ku fur tab cusub.
-       */
+
       if (pendingServiceUrl) {
         sessionStorage.removeItem(
           "pendingServiceUrl"
@@ -122,14 +160,9 @@ export default function Login() {
         );
 
         try {
-          const serviceUrl = new URL(
-            pendingServiceUrl
-          );
+          const serviceUrl =
+            new URL(pendingServiceUrl);
 
-          /*
-           * Security:
-           * Kaliya HTTP iyo HTTPS ayaa la oggol yahay.
-           */
           if (
             serviceUrl.protocol !== "http:" &&
             serviceUrl.protocol !== "https:"
@@ -157,11 +190,6 @@ export default function Login() {
           return;
         }
 
-        /*
-         * Muhiim:
-         * replace:true wuxuu login page-ka
-         * ka saaraa browser history-ga.
-         */
         navigate("/", {
           replace: true,
         });
@@ -169,9 +197,11 @@ export default function Login() {
         return;
       }
 
-      /*
-       * ADMIN
-       */
+
+      // ===============================================
+      // ADMIN
+      // ===============================================
+
       if (loggedInUser?.role === "ADMIN") {
         navigate("/admin/dashboard", {
           replace: true,
@@ -180,12 +210,15 @@ export default function Login() {
         return;
       }
 
-      /*
-       * CITIZEN / VISITOR
-       */
+
+      // ===============================================
+      // CITIZEN / VISITOR
+      // ===============================================
+
       navigate("/", {
         replace: true,
       });
+
     } catch (error) {
       console.error(
         "Login error:",
@@ -198,315 +231,776 @@ export default function Login() {
         "Login failed. Please check your email and password.";
 
       setError(message);
+
     } finally {
       setLoading(false);
     }
   };
 
-  /*
-   * Inta AuthContext uu hubinayo session-ka
-   */
+
+  // ===================================================
+  // AUTH LOADING
+  // ===================================================
+
   if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
+
         <div className="text-center">
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-[#123c2f]" />
+
+          <div
+            className="
+              mx-auto
+              h-11
+              w-11
+              animate-spin
+              rounded-full
+              border-4
+              border-slate-200
+              border-t-[#4189DD]
+            "
+          />
 
           <p className="mt-4 text-sm font-medium text-slate-500">
             Checking your session...
           </p>
+
         </div>
+
       </div>
     );
   }
 
-  /*
-   * Haddii horey loo login-gareeyay,
-   * ha soo bandhigin login form.
-   */
+
+  // ===================================================
+  // ALREADY AUTHENTICATED
+  // ===================================================
+
   if (isAuthenticated && user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
+
         <div className="text-center">
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-[#123c2f]" />
+
+          <div
+            className="
+              mx-auto
+              h-11
+              w-11
+              animate-spin
+              rounded-full
+              border-4
+              border-slate-200
+              border-t-[#4189DD]
+            "
+          />
 
           <p className="mt-4 text-sm font-medium text-slate-500">
             Redirecting...
           </p>
+
         </div>
+
       </div>
     );
   }
 
+
+  // ===================================================
+  // PAGE
+  // ===================================================
+
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="grid min-h-screen lg:grid-cols-2">
-        {/* LEFT SIDE */}
-        <div className="hidden bg-[#123c2f] lg:flex">
-          <div className="relative flex w-full flex-col justify-between overflow-hidden p-12 text-white">
-            {/* Decorative elements */}
-            <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/5" />
 
-            <div className="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-[#16804c]/20" />
+      <div className="grid min-h-screen lg:grid-cols-[1.05fr_0.95fr]">
 
-            {/* Logo */}
-            <div className="relative z-10 flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[#123c2f]">
-                <ShieldCheck size={30} />
-              </div>
+
+        {/* =================================================
+            LEFT GOVERNMENT PANEL
+        ================================================= */}
+
+        <div
+          className="
+            relative
+            hidden
+            overflow-hidden
+            bg-[#0B3D91]
+            lg:flex
+          "
+        >
+
+          {/* Decorative circles */}
+
+          <div
+            className="
+              absolute
+              -right-32
+              -top-32
+              h-[500px]
+              w-[500px]
+              rounded-full
+              border
+              border-white/10
+            "
+          />
+
+          <div
+            className="
+              absolute
+              -bottom-40
+              -left-40
+              h-[550px]
+              w-[550px]
+              rounded-full
+              bg-white/5
+            "
+          />
+
+          <div
+            className="
+              absolute
+              right-20
+              top-1/3
+              h-32
+              w-32
+              rounded-full
+              bg-[#4189DD]/30
+              blur-2xl
+            "
+          />
+
+
+          <div
+            className="
+              relative
+              z-10
+              flex
+              w-full
+              flex-col
+              justify-between
+              p-12
+              xl:p-16
+              text-white
+            "
+          >
+
+            {/* TOP BRAND */}
+
+            <div className="flex items-center gap-4">
+
+              <SomaliaFlag size="md" />
 
               <div>
-                <div className="text-lg font-black">
-                  Federal Government
-                </div>
 
-                <div className="text-sm text-white/60">
+                <p className="text-lg font-black tracking-tight">
+                  Federal Government
+                </p>
+
+                <p className="text-sm text-white/70">
                   Republic of Somalia
-                </div>
+                </p>
+
               </div>
+
             </div>
 
-            {/* Main text */}
-            <div className="relative z-10 max-w-xl">
-              <p className="mb-4 text-sm font-bold uppercase tracking-[0.25em] text-[#80d7a7]">
-                Government Portal
-              </p>
 
-              <h1 className="text-5xl font-black leading-tight">
-                Secure access to government services.
+            {/* MAIN CONTENT */}
+
+            <div className="max-w-xl">
+
+              <div
+                className="
+                  mb-5
+                  inline-flex
+                  items-center
+                  gap-2
+                  rounded-full
+                  border
+                  border-white/15
+                  bg-white/10
+                  px-4
+                  py-2
+                  text-xs
+                  font-bold
+                  uppercase
+                  tracking-[0.18em]
+                  text-white/90
+                  backdrop-blur
+                "
+              >
+
+                <Globe2 className="h-4 w-4" />
+
+                Somalia Government Portal
+
+              </div>
+
+
+              <h1
+                className="
+                  text-5xl
+                  font-black
+                  leading-[1.08]
+                  tracking-tight
+                  xl:text-6xl
+                "
+              >
+                One portal.
+                <br />
+
+                <span className="text-[#8CC8FF]">
+                  One secure access.
+                </span>
               </h1>
 
-              <p className="mt-6 max-w-lg text-lg leading-8 text-white/70">
+
+              <p
+                className="
+                  mt-7
+                  max-w-lg
+                  text-lg
+                  leading-8
+                  text-white/75
+                "
+              >
                 Access government information and
-                digital services through one secure
-                portal.
+                digital services through a secure,
+                trusted and unified government portal.
               </p>
 
-              <div className="mt-8 grid grid-cols-2 gap-4">
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                  <ShieldCheck
-                    size={24}
-                    className="text-[#80d7a7]"
-                  />
 
-                  <p className="mt-3 font-bold">
-                    Secure
-                  </p>
+              {/* FEATURES */}
 
-                  <p className="mt-1 text-sm text-white/50">
-                    Protected account access
-                  </p>
-                </div>
+              <div className="mt-9 grid grid-cols-2 gap-4">
 
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                  <LockKeyhole
-                    size={24}
-                    className="text-[#80d7a7]"
-                  />
+                <Feature
+                  icon={ShieldCheck}
+                  title="Secure"
+                  text="Protected account access"
+                />
 
-                  <p className="mt-3 font-bold">
-                    Trusted
-                  </p>
+                <Feature
+                  icon={CheckCircle2}
+                  title="Trusted"
+                  text="Official digital services"
+                />
 
-                  <p className="mt-1 text-sm text-white/50">
-                    Government services
-                  </p>
-                </div>
               </div>
+
             </div>
 
-            {/* Footer */}
-            <div className="relative z-10 text-sm text-white/40">
-              © {new Date().getFullYear()} Federal
-              Government of Somalia
+
+            {/* FOOTER */}
+
+            <div className="flex items-center justify-between">
+
+              <p className="text-xs text-white/45">
+                © {new Date().getFullYear()} Federal
+                Government of Somalia
+              </p>
+
+              <p className="text-xs text-white/45">
+                Secure Government Portal
+              </p>
+
             </div>
+
           </div>
+
         </div>
 
-        {/* RIGHT SIDE */}
-        <div className="flex items-center justify-center px-5 py-10 sm:px-8">
+
+        {/* =================================================
+            RIGHT LOGIN AREA
+        ================================================= */}
+
+        <div
+          className="
+            flex
+            items-center
+            justify-center
+            px-5
+            py-10
+            sm:px-8
+            lg:px-12
+          "
+        >
+
           <div className="w-full max-w-md">
-            {/* Mobile logo */}
-            <div className="mb-8 flex items-center justify-center gap-3 lg:hidden">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#123c2f] text-white">
-                <ShieldCheck size={25} />
+
+
+            {/* MOBILE BRAND */}
+
+            <div className="mb-8 flex flex-col items-center lg:hidden">
+
+              <SomaliaFlag size="md" />
+
+              <div className="mt-4 text-center">
+
+                <p className="font-black text-[#0B3D91]">
+                  Federal Government of Somalia
+                </p>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  Somalia Government Portal
+                </p>
+
               </div>
 
-              <div>
-                <div className="font-black text-[#123c2f]">
-                  Federal Government
-                </div>
-
-                <div className="text-xs text-slate-500">
-                  Republic of Somalia
-                </div>
-              </div>
             </div>
 
-            {/* Card */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-200/50 sm:p-9">
-              <div className="mb-8">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#e8f4ee] text-[#123c2f]">
-                  <LockKeyhole size={24} />
+
+            {/* LOGIN CARD */}
+
+            <div
+              className="
+                overflow-hidden
+                rounded-[28px]
+                border
+                border-slate-200
+                bg-white
+                shadow-2xl
+                shadow-slate-200/70
+              "
+            >
+
+              {/* BLUE TOP BAR */}
+
+              <div className="h-1.5 bg-[#4189DD]" />
+
+
+              <div className="p-7 sm:p-9">
+
+
+                {/* ICON */}
+
+                <div
+                  className="
+                    mb-6
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-2xl
+                    bg-[#EAF3FF]
+                    text-[#0B3D91]
+                    ring-1
+                    ring-[#4189DD]/10
+                  "
+                >
+                  <LockKeyhole size={25} />
                 </div>
 
-                <h2 className="text-3xl font-black text-[#123c2f]">
+
+                {/* TITLE */}
+
+                <h2
+                  className="
+                    text-3xl
+                    font-black
+                    tracking-tight
+                    text-slate-900
+                  "
+                >
                   Welcome Back
                 </h2>
 
                 <p className="mt-2 text-sm leading-6 text-slate-500">
                   Sign in to access your government
-                  services.
+                  services securely.
                 </p>
-              </div>
 
-              {/* Error */}
-              {error && (
-                <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium leading-6 text-red-700">
-                  {error}
-                </div>
-              )}
 
-              <form
-                onSubmit={handleLogin}
-                className="space-y-5"
-              >
-                {/* EMAIL */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="mb-2 block text-sm font-bold text-slate-700"
+                {/* ERROR */}
+
+                {error && (
+                  <div
+                    className="
+                      mt-6
+                      flex
+                      gap-3
+                      rounded-xl
+                      border
+                      border-red-200
+                      bg-red-50
+                      px-4
+                      py-3
+                      text-sm
+                      font-medium
+                      leading-6
+                      text-red-700
+                    "
                   >
-                    Email Address
-                  </label>
 
-                  <div className="relative">
-                    <Mail
-                      size={19}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                    />
+                    <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-red-500" />
 
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) =>
-                        setEmail(e.target.value)
-                      }
-                      placeholder="you@example.com"
-                      autoComplete="email"
-                      disabled={loading}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-4 text-sm outline-none transition focus:border-[#16804c] focus:bg-white focus:ring-4 focus:ring-[#16804c]/10 disabled:cursor-not-allowed disabled:opacity-60"
-                    />
+                    <span>{error}</span>
+
                   </div>
-                </div>
+                )}
 
-                {/* PASSWORD */}
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="mb-2 block text-sm font-bold text-slate-700"
-                  >
-                    Password
-                  </label>
 
-                  <div className="relative">
-                    <LockKeyhole
-                      size={19}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                    />
+                {/* FORM */}
 
-                    <input
-                      id="password"
-                      type={
-                        showPassword
-                          ? "text"
-                          : "password"
-                      }
-                      value={password}
-                      onChange={(e) =>
-                        setPassword(e.target.value)
-                      }
-                      placeholder="Enter your password"
-                      autoComplete="current-password"
-                      disabled={loading}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-12 text-sm outline-none transition focus:border-[#16804c] focus:bg-white focus:ring-4 focus:ring-[#16804c]/10 disabled:cursor-not-allowed disabled:opacity-60"
-                    />
+                <form
+                  onSubmit={handleLogin}
+                  className="mt-7 space-y-5"
+                >
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowPassword(
-                          (prev) => !prev
-                        )
-                      }
-                      disabled={loading}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
-                      aria-label={
-                        showPassword
-                          ? "Hide password"
-                          : "Show password"
-                      }
+
+                  {/* EMAIL */}
+
+                  <div>
+
+                    <label
+                      htmlFor="email"
+                      className="
+                        mb-2
+                        block
+                        text-sm
+                        font-bold
+                        text-slate-700
+                      "
                     >
-                      {showPassword ? (
-                        <EyeOff size={19} />
-                      ) : (
-                        <Eye size={19} />
-                      )}
-                    </button>
+                      Email Address
+                    </label>
+
+                    <div className="relative">
+
+                      <Mail
+                        size={19}
+                        className="
+                          absolute
+                          left-4
+                          top-1/2
+                          -translate-y-1/2
+                          text-slate-400
+                        "
+                      />
+
+                      <input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) =>
+                          setEmail(e.target.value)
+                        }
+                        placeholder="you@example.com"
+                        autoComplete="email"
+                        disabled={loading}
+                        className="
+                          w-full
+                          rounded-xl
+                          border
+                          border-slate-200
+                          bg-slate-50
+                          py-3.5
+                          pl-12
+                          pr-4
+                          text-sm
+                          text-slate-800
+                          outline-none
+                          transition
+                          placeholder:text-slate-400
+                          focus:border-[#4189DD]
+                          focus:bg-white
+                          focus:ring-4
+                          focus:ring-[#4189DD]/10
+                          disabled:cursor-not-allowed
+                          disabled:opacity-60
+                        "
+                      />
+
+                    </div>
+
                   </div>
+
+
+                  {/* PASSWORD */}
+
+                  <div>
+
+                    <label
+                      htmlFor="password"
+                      className="
+                        mb-2
+                        block
+                        text-sm
+                        font-bold
+                        text-slate-700
+                      "
+                    >
+                      Password
+                    </label>
+
+                    <div className="relative">
+
+                      <LockKeyhole
+                        size={19}
+                        className="
+                          absolute
+                          left-4
+                          top-1/2
+                          -translate-y-1/2
+                          text-slate-400
+                        "
+                      />
+
+                      <input
+                        id="password"
+                        type={
+                          showPassword
+                            ? "text"
+                            : "password"
+                        }
+                        value={password}
+                        onChange={(e) =>
+                          setPassword(
+                            e.target.value
+                          )
+                        }
+                        placeholder="Enter your password"
+                        autoComplete="current-password"
+                        disabled={loading}
+                        className="
+                          w-full
+                          rounded-xl
+                          border
+                          border-slate-200
+                          bg-slate-50
+                          py-3.5
+                          pl-12
+                          pr-12
+                          text-sm
+                          text-slate-800
+                          outline-none
+                          transition
+                          placeholder:text-slate-400
+                          focus:border-[#4189DD]
+                          focus:bg-white
+                          focus:ring-4
+                          focus:ring-[#4189DD]/10
+                          disabled:cursor-not-allowed
+                          disabled:opacity-60
+                        "
+                      />
+
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowPassword(
+                            (prev) => !prev
+                          )
+                        }
+                        disabled={loading}
+                        className="
+                          absolute
+                          right-2
+                          top-1/2
+                          -translate-y-1/2
+                          rounded-lg
+                          p-2
+                          text-slate-400
+                          transition
+                          hover:bg-slate-100
+                          hover:text-[#0B3D91]
+                        "
+                        aria-label={
+                          showPassword
+                            ? "Hide password"
+                            : "Show password"
+                        }
+                      >
+
+                        {showPassword ? (
+                          <EyeOff size={19} />
+                        ) : (
+                          <Eye size={19} />
+                        )}
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
+
+                  {/* SUBMIT */}
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="
+                      flex
+                      w-full
+                      items-center
+                      justify-center
+                      gap-3
+                      rounded-xl
+                      bg-[#0B3D91]
+                      px-5
+                      py-3.5
+                      text-sm
+                      font-bold
+                      text-white
+                      shadow-lg
+                      shadow-[#0B3D91]/20
+                      transition
+                      hover:bg-[#092F70]
+                      hover:shadow-xl
+                      disabled:cursor-not-allowed
+                      disabled:opacity-60
+                    "
+                  >
+
+                    {loading ? (
+                      <>
+                        <div
+                          className="
+                            h-5
+                            w-5
+                            animate-spin
+                            rounded-full
+                            border-2
+                            border-white/30
+                            border-t-white
+                          "
+                        />
+
+                        Signing in...
+                      </>
+                    ) : (
+                      <>
+                        <LockKeyhole size={18} />
+
+                        Sign In
+                      </>
+                    )}
+
+                  </button>
+
+                </form>
+
+
+                {/* REGISTER */}
+
+                <div
+                  className="
+                    mt-7
+                    border-t
+                    border-slate-100
+                    pt-6
+                    text-center
+                  "
+                >
+
+                  <p className="text-sm text-slate-500">
+                    Don't have an account?
+                  </p>
+
+                  <Link
+                    to="/register"
+                    className="
+                      mt-2
+                      inline-flex
+                      items-center
+                      gap-1
+                      text-sm
+                      font-bold
+                      text-[#0B3D91]
+                      transition
+                      hover:text-[#4189DD]
+                    "
+                  >
+                    Create an account
+                  </Link>
+
                 </div>
 
-                {/* SUBMIT */}
+
+                {/* BACK HOME */}
+
                 <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#123c2f] px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#123c2f]/20 transition hover:bg-[#0d3026] disabled:cursor-not-allowed disabled:opacity-60"
+                  type="button"
+                  onClick={() =>
+                    navigate("/", {
+                      replace: true,
+                    })
+                  }
+                  className="
+                    mt-5
+                    flex
+                    w-full
+                    items-center
+                    justify-center
+                    gap-2
+                    text-sm
+                    font-semibold
+                    text-slate-400
+                    transition
+                    hover:text-[#0B3D91]
+                  "
                 >
-                  {loading ? (
-                    <>
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
 
-                      Signing in...
-                    </>
-                  ) : (
-                    <>
-                      <LockKeyhole size={18} />
-                      Sign In
-                    </>
-                  )}
+                  <ArrowLeft size={15} />
+
+                  Back to Home
+
                 </button>
-              </form>
 
-              {/* REGISTER */}
-              <div className="mt-7 border-t border-slate-100 pt-6 text-center">
-                <p className="text-sm text-slate-500">
-                  Don't have an account?
-                </p>
-
-                <Link
-                  to="/register"
-                  className="mt-2 inline-block text-sm font-bold text-[#16804c] hover:underline"
-                >
-                  Create an account
-                </Link>
               </div>
 
-              {/* BACK HOME */}
-              <button
-                onClick={() =>
-                  navigate("/", {
-                    replace: true,
-                  })
-                }
-                className="mt-5 w-full text-center text-sm font-semibold text-slate-400 transition hover:text-[#123c2f]"
-              >
-                ← Back to Home
-              </button>
             </div>
+
           </div>
+
         </div>
+
       </div>
+
+    </div>
+  );
+}
+
+
+// =====================================================
+// FEATURE
+// =====================================================
+
+function Feature({
+  icon: Icon,
+  title,
+  text,
+}) {
+  return (
+    <div
+      className="
+        rounded-2xl
+        border
+        border-white/10
+        bg-white/10
+        p-5
+        backdrop-blur
+      "
+    >
+
+      <Icon
+        size={23}
+        className="text-[#9BD0FF]"
+      />
+
+      <p className="mt-3 font-bold">
+        {title}
+      </p>
+
+      <p className="mt-1 text-sm text-white/55">
+        {text}
+      </p>
+
     </div>
   );
 }
