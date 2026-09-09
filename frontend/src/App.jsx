@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import Home from "./pages/Home";
+import ComingSoon from "./pages/ComingSoon";
+
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Contact from "./pages/Contact";
@@ -24,15 +25,42 @@ import Settings from "./pages/admin/Settings";
 function App() {
   return (
     <Routes>
-      {/* Public Pages */}
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/contact" element={<Contact />} />
+      {/* =========================
+          PUBLIC PAGES
+      ========================= */}
 
-      {/* Admin Pages */}
-      <Route path="/admin" element={<AdminRoute />}>
+      {/* Temporary Coming Soon Page */}
+      <Route
+        path="/"
+        element={<ComingSoon />}
+      />
+
+      <Route
+        path="/login"
+        element={<Login />}
+      />
+
+      <Route
+        path="/register"
+        element={<Register />}
+      />
+
+      <Route
+        path="/contact"
+        element={<Contact />}
+      />
+
+      {/* =========================
+          ADMIN PAGES
+      ========================= */}
+
+      <Route
+        path="/admin"
+        element={<AdminRoute />}
+      >
         <Route element={<AdminLayout />}>
+
+          {/* /admin → /admin/dashboard */}
           <Route
             index
             element={
@@ -43,72 +71,93 @@ function App() {
             }
           />
 
+          {/* Dashboard */}
           <Route
             path="dashboard"
             element={<AdminDashboard />}
           />
 
+          {/* Users */}
           <Route
             path="users"
             element={<Users />}
           />
 
+          {/* Services */}
           <Route
             path="services"
             element={<Services />}
           />
 
+          {/* Categories */}
           <Route
             path="categories"
             element={<Categories />}
           />
 
+          {/* Ministries */}
           <Route
             path="ministries"
             element={<Ministries />}
           />
 
+          {/* Agencies */}
           <Route
             path="agencies"
             element={<Agencies />}
           />
 
+          {/* Provinces */}
           <Route
             path="provinces"
             element={<Provinces />}
           />
 
+          {/* Cabinet */}
           <Route
             path="cabinet"
             element={<Cabinet />}
           />
 
+          {/* News */}
           <Route
             path="news"
             element={<News />}
           />
 
+          {/* Events */}
           <Route
             path="events"
             element={<Events />}
           />
 
+          {/* Emergency Contacts */}
           <Route
             path="emergency-contacts"
             element={<EmergencyContacts />}
           />
 
+          {/* Settings */}
           <Route
             path="settings"
             element={<Settings />}
           />
+
         </Route>
       </Route>
 
-      {/* 404 */}
+      {/* =========================
+          404
+      ========================= */}
+
       <Route
         path="*"
-        element={<Navigate to="/" replace />}
+        element={
+          <Navigate
+            to="/"
+            replace
+          />
+        }
       />
     </Routes>
   );
