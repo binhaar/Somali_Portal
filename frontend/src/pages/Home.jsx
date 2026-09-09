@@ -67,7 +67,7 @@ const LEADERS = [
   },
 
   {
-    name: "H.E. Cabdiqaadir Maxamed Nuur (Jaamac)",
+    name: "H.E. Abdiqaadir Mohamed Nur (Jamac)",
     nameSo: "Mudane Cabdiqaadir Maxamed Nuur (Jaamac)",
     role: "Speaker of the House of the People",
     roleSo: "Guddoomiyaha Golaha Shacabka",
