@@ -20,6 +20,13 @@ import {
   Search,
   ShieldCheck,
   Star,
+  HeartPulse,
+  CreditCard,
+  Car,
+  Plane,
+  Users,
+  Baby,
+  Home as HomeIcon,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -28,16 +35,8 @@ import api from "../services/api";
 import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 
-/* =========================================================
-   SOMALIA LOGO
-========================================================= */
-
 const SOMALIA_LOGO =
   "https://somaliagov.netlify.app/logos/coat-of-arms.png";
-
-/* =========================================================
-   LEADERS
-========================================================= */
 
 const LEADERS = [
   {
@@ -52,7 +51,6 @@ const LEADERS = [
     websiteUrl: "https://villasomalia.gov.so/",
     websiteName: "Villa Somalia",
   },
-
   {
     name: "H.E. Hamza Abdi Barre",
     nameSo: "Mudane Xamse Cabdi Barre",
@@ -65,7 +63,6 @@ const LEADERS = [
     websiteUrl: "https://opm.gov.so/",
     websiteName: "Office of the Prime Minister",
   },
-
   {
     name: "H.E. Abdulkadir Mohamed Nur (Jamac)",
     nameSo: "Mudane Cabdiqaadir Maxamed Nuur (Jaamac)",
@@ -78,7 +75,6 @@ const LEADERS = [
     websiteUrl: "https://parliament.gov.so/",
     websiteName: "House of the People",
   },
-
   {
     name: "H.E. Abdi Hashi Abdullahi",
     nameSo: "Mudane Cabdi Xaashi Cabdullaahi",
@@ -93,9 +89,32 @@ const LEADERS = [
   },
 ];
 
-/* =========================================================
-   IMAGE FALLBACK
-========================================================= */
+const SERVICE_ICON_MAP = {
+  business: BriefcaseBusiness,
+  health: HeartPulse,
+  certificate: GraduationCap,
+  education: GraduationCap,
+  "id-card": CreditCard,
+  document: FileText,
+  finance: Landmark,
+  car: Car,
+  transport: Car,
+  passport: Plane,
+  building: Building2,
+  users: Users,
+  family: Users,
+  security: ShieldCheck,
+  child: Baby,
+  housing: HomeIcon,
+};
+
+const getServiceIcon = (iconName) => {
+  const key = String(iconName || "")
+    .toLowerCase()
+    .trim();
+
+  return SERVICE_ICON_MAP[key] || FileText;
+};
 
 const getImageFallback = (event) => {
   if (!event?.currentTarget) return;
@@ -103,10 +122,6 @@ const getImageFallback = (event) => {
   event.currentTarget.onerror = null;
   event.currentTarget.src = SOMALIA_LOGO;
 };
-
-/* =========================================================
-   API ARRAY HELPER
-========================================================= */
 
 const extractList = (response, key) => {
   const payload = response?.data;
@@ -126,37 +141,21 @@ const extractList = (response, key) => {
   return [];
 };
 
-/* =========================================================
-   HOME
-========================================================= */
-
 export default function Home() {
   const navigate = useNavigate();
-
   const auth = useContext(AuthContext) || {};
 
   const user = auth.user;
   const logout = auth.logout;
 
-  /* =======================================================
-     STATE
-  ======================================================= */
-
   const [language, setLanguage] = useState("en");
-
   const [search, setSearch] = useState("");
-
   const [services, setServices] = useState([]);
   const [ministries, setMinistries] = useState([]);
   const [agencies, setAgencies] = useState([]);
   const [events, setEvents] = useState([]);
   const [emergencyContacts, setEmergencyContacts] = useState([]);
-
   const [loading, setLoading] = useState(true);
-
-  /* =======================================================
-     TRANSLATIONS
-  ======================================================= */
 
   const t = {
     en: {
@@ -166,362 +165,150 @@ export default function Home() {
       agencies: "Agencies",
       events: "Events",
       about: "About",
-
-      official:
-        "Official Portal of the Federal Government",
-
-      federal:
-        "Federal Republic of Somalia",
-
-      slogan:
-        "Peace, Progress, and Prosperity.",
-
+      official: "Official Portal of the Federal Government",
+      federal: "Federal Republic of Somalia",
+      slogan: "Peace, Progress, and Prosperity.",
       search:
         "Search for services, ministries, agencies, or documents...",
-
-      popular:
-        "Popular:",
-
-      passport:
-        "Passport",
-
-      visa:
-        "Visa",
-
-      jobs:
-        "Jobs",
-
-      tender:
-        "Tender",
-
-      leadership:
-        "Executive Leadership",
-
+      popular: "Popular:",
+      passport: "Passport",
+      visa: "Visa",
+      jobs: "Jobs",
+      tender: "Tender",
+      leadership: "Executive Leadership",
       leadershipDesc:
         "Meet the leaders of the Federal Republic of Somalia.",
-
-      viewProfile:
-        "View Profile",
-
-      onlineServices:
-        "Online Government Services",
-
+      viewProfile: "View Profile",
+      onlineServices: "Online Government Services",
       onlineServicesDesc:
         "Access essential government services quickly and securely.",
-
-      viewAllServices:
-        "View All Services",
-
-      importantDates:
-        "Important National Dates",
-
+      viewAllServices: "View All Services",
+      importantDates: "Important National Dates",
       importantDatesDesc:
         "Stay informed about important national events and occasions.",
-
-      federalMinistries:
-        "Federal Ministries",
-
+      federalMinistries: "Federal Ministries",
       federalMinistriesDesc:
         "Explore the ministries responsible for delivering national priorities.",
-
-      nationalAgencies:
-        "National Agencies",
-
+      nationalAgencies: "National Agencies",
       nationalAgenciesDesc:
         "Find key government agencies and institutions.",
-
-      emergency:
-        "Emergency Contacts",
-
+      emergency: "Emergency Contacts",
       emergencyDesc:
         "Important numbers for emergency and public services.",
-
-      latestEvents:
-        "Latest Government Events",
-
+      latestEvents: "Latest Government Events",
       latestEventsDesc:
         "Stay updated with important events and activities.",
-
-      searchResults:
-        "Search Results",
-
-      noResults:
-        "No results found.",
-
-      login:
-        "Login",
-
-      register:
-        "Register",
-
-      dashboard:
-        "Dashboard",
-
-      logout:
-        "Logout",
-
+      searchResults: "Search Results",
+      noResults: "No results found.",
+      login: "Login",
+      register: "Register",
+      dashboard: "Dashboard",
+      logout: "Logout",
       footerDescription:
         "The official digital gateway to the Federal Government of Somalia.",
-
-      quickLinks:
-        "Quick Links",
-
-      government:
-        "Government",
-
-      support:
-        "Support",
-
-      privacy:
-        "Privacy Policy",
-
-      terms:
-        "Terms of Service",
-
-      rights:
-        "All rights reserved.",
-
-      federalLeadership:
-        "Federal Leadership",
-
-      federalGovernment:
-        "Federal Government",
-
-      onlineService:
-        "Online Service",
-
-      learnMore:
-        "Learn More",
-
-      exploreServices:
-        "Explore Services",
-
-      nationalCalendar:
-        "National Calendar",
-
-      nationalInstitutions:
-        "National Institutions",
-
-      publicSafety:
-        "Public Safety",
-
-      latestUpdates:
-        "Latest Updates",
-
-      governmentServices:
-        "Government Services",
-
-      contact:
-        "Contact",
-
-      vision:
-        "National Vision",
-
+      quickLinks: "Quick Links",
+      government: "Government",
+      support: "Support",
+      privacy: "Privacy Policy",
+      terms: "Terms of Service",
+      rights: "All rights reserved.",
+      federalLeadership: "Federal Leadership",
+      federalGovernment: "Federal Government",
+      onlineService: "Online Service",
+      learnMore: "Learn More",
+      exploreServices: "Explore Services",
+      nationalCalendar: "National Calendar",
+      nationalInstitutions: "National Institutions",
+      publicSafety: "Public Safety",
+      latestUpdates: "Latest Updates",
+      governmentServices: "Government Services",
+      contact: "Contact",
+      vision: "National Vision",
       visionDescription:
         "Building a peaceful, stable, prosperous and inclusive Somalia.",
-
-      constitution:
-        "Constitution",
-
+      constitution: "Constitution",
       constitutionDescription:
         "Learn about the constitutional framework of Somalia.",
-
-      parliament:
-        "Parliament",
-
+      parliament: "Parliament",
       parliamentDescription:
         "Explore the Federal Parliament of Somalia.",
     },
-
     so: {
-      home:
-        "Bogga Hore",
-
-      services:
-        "Adeegyada",
-
-      ministries:
-        "Wasaaradaha",
-
-      agencies:
-        "Hay'adaha",
-
-      events:
-        "Dhacdooyinka",
-
-      about:
-        "Ku Saabsan",
-
-      official:
-        "Bogga Rasmiga ah ee Dowladda Federaalka",
-
-      federal:
-        "Jamhuuriyadda Federaalka Soomaaliya",
-
-      slogan:
-        "Nabad, Horumar iyo Barwaaqo.",
-
+      home: "Bogga Hore",
+      services: "Adeegyada",
+      ministries: "Wasaaradaha",
+      agencies: "Hay'adaha",
+      events: "Dhacdooyinka",
+      about: "Ku Saabsan",
+      official: "Bogga Rasmiga ah ee Dowladda Federaalka",
+      federal: "Jamhuuriyadda Federaalka Soomaaliya",
+      slogan: "Nabad, Horumar iyo Barwaaqo.",
       search:
         "Ka raadi adeegyo, wasaarado, hay'ado ama dukumiintiyo...",
-
-      popular:
-        "Raadinta caanka ah:",
-
-      passport:
-        "Baasaboor",
-
-      visa:
-        "Fiiso",
-
-      jobs:
-        "Shaqooyin",
-
-      tender:
-        "Qandaraas",
-
-      leadership:
-        "Hoggaanka Sare",
-
+      popular: "Raadinta caanka ah:",
+      passport: "Baasaboor",
+      visa: "Fiiso",
+      jobs: "Shaqooyin",
+      tender: "Qandaraas",
+      leadership: "Hoggaanka Sare",
       leadershipDesc:
         "La kulan hoggaanka Jamhuuriyadda Federaalka Soomaaliya.",
-
-      viewProfile:
-        "Arag Macluumaadka",
-
-      onlineServices:
-        "Adeegyada Dowladda ee Online-ka",
-
+      viewProfile: "Arag Macluumaadka",
+      onlineServices: "Adeegyada Dowladda ee Online-ka",
       onlineServicesDesc:
         "Si fudud oo ammaan ah uga hel adeegyada muhiimka ah ee dowladda.",
-
-      viewAllServices:
-        "Arag Dhammaan Adeegyada",
-
-      importantDates:
-        "Taariikhaha Muhiimka ah",
-
+      viewAllServices: "Arag Dhammaan Adeegyada",
+      importantDates: "Taariikhaha Muhiimka ah",
       importantDatesDesc:
         "La soco dhacdooyinka iyo maalmaha muhiimka ah ee qaranka.",
-
-      federalMinistries:
-        "Wasaaradaha Federaalka",
-
+      federalMinistries: "Wasaaradaha Federaalka",
       federalMinistriesDesc:
         "Baro wasaaradaha ka shaqeeya mudnaanta iyo horumarka qaranka.",
-
-      nationalAgencies:
-        "Hay'adaha Qaranka",
-
+      nationalAgencies: "Hay'adaha Qaranka",
       nationalAgenciesDesc:
         "Hel hay'adaha iyo xarumaha muhiimka ah ee dowladda.",
-
-      emergency:
-        "Lambarada Gurmadka",
-
+      emergency: "Lambarada Gurmadka",
       emergencyDesc:
         "Lambarada muhiimka ah ee adeegyada gurmadka iyo bulshada.",
-
-      latestEvents:
-        "Dhacdooyinka Dowladda",
-
+      latestEvents: "Dhacdooyinka Dowladda",
       latestEventsDesc:
         "La soco munaasabadaha iyo hawlaha muhiimka ah ee dowladda.",
-
-      searchResults:
-        "Natiijooyinka Raadinta",
-
-      noResults:
-        "Wax natiijo ah lama helin.",
-
-      login:
-        "Gal",
-
-      register:
-        "Isdiiwaangeli",
-
-      dashboard:
-        "Dashboard",
-
-      logout:
-        "Ka bax",
-
+      searchResults: "Natiijooyinka Raadinta",
+      noResults: "Wax natiijo ah lama helin.",
+      login: "Gal",
+      register: "Isdiiwaangeli",
+      dashboard: "Dashboard",
+      logout: "Ka bax",
       footerDescription:
         "Albaabka rasmiga ah ee dijitaalka ah ee Dowladda Federaalka Soomaaliya.",
-
-      quickLinks:
-        "Xiriirro Degdeg ah",
-
-      government:
-        "Dowladda",
-
-      support:
-        "Taageero",
-
-      privacy:
-        "Siyaasadda Asturnaanta",
-
-      terms:
-        "Shuruudaha Adeegga",
-
-      rights:
-        "Dhammaan xuquuqdu way dhowran yihiin.",
-
-      federalLeadership:
-        "Hoggaanka Federaalka",
-
-      federalGovernment:
-        "Dowladda Federaalka",
-
-      onlineService:
-        "Adeeg Online ah",
-
-      learnMore:
-        "Wax badan ka ogow",
-
-      exploreServices:
-        "Baadh Adeegyada",
-
-      nationalCalendar:
-        "Jadwalka Qaranka",
-
-      nationalInstitutions:
-        "Hay'adaha Qaranka",
-
-      publicSafety:
-        "Badbaadada Bulshada",
-
-      latestUpdates:
-        "Wararkii Ugu Dambeeyay",
-
-      governmentServices:
-        "Adeegyada Dowladda",
-
-      contact:
-        "Xiriir",
-
-      vision:
-        "Himilada Qaranka",
-
+      quickLinks: "Xiriirro Degdeg ah",
+      government: "Dowladda",
+      support: "Taageero",
+      privacy: "Siyaasadda Asturnaanta",
+      terms: "Shuruudaha Adeegga",
+      rights: "Dhammaan xuquuqdu way dhowran yihiin.",
+      federalLeadership: "Hoggaanka Federaalka",
+      federalGovernment: "Dowladda Federaalka",
+      onlineService: "Adeeg Online ah",
+      learnMore: "Wax badan ka ogow",
+      exploreServices: "Baadh Adeegyada",
+      nationalCalendar: "Jadwalka Qaranka",
+      nationalInstitutions: "Hay'adaha Qaranka",
+      publicSafety: "Badbaadada Bulshada",
+      latestUpdates: "Wararkii Ugu Dambeeyay",
+      governmentServices: "Adeegyada Dowladda",
+      contact: "Xiriir",
+      vision: "Himilada Qaranka",
       visionDescription:
         "Dhisidda Soomaaliya nabad ah, xasilloon, barwaaqo leh oo loo dhan yahay.",
-
-      constitution:
-        "Dastuurka",
-
+      constitution: "Dastuurka",
       constitutionDescription:
         "Baro nidaamka dastuuriga ah ee Soomaaliya.",
-
-      parliament:
-        "Baarlamaanka",
-
+      parliament: "Baarlamaanka",
       parliamentDescription:
         "Baro Baarlamaanka Federaalka Soomaaliya.",
     },
   }[language];
-
-  /* =======================================================
-     LOAD HOME DATA
-  ======================================================= */
 
   useEffect(() => {
     let mounted = true;
@@ -548,14 +335,9 @@ export default function Home() {
           emergencyRes,
         ] = results;
 
-        /* SERVICES */
-
         if (servicesRes.status === "fulfilled") {
           setServices(
-            extractList(
-              servicesRes.value,
-              "services"
-            )
+            extractList(servicesRes.value, "services")
           );
         } else {
           console.error(
@@ -564,14 +346,9 @@ export default function Home() {
           );
         }
 
-        /* MINISTRIES */
-
         if (ministriesRes.status === "fulfilled") {
           setMinistries(
-            extractList(
-              ministriesRes.value,
-              "ministries"
-            )
+            extractList(ministriesRes.value, "ministries")
           );
         } else {
           console.error(
@@ -580,14 +357,9 @@ export default function Home() {
           );
         }
 
-        /* AGENCIES */
-
         if (agenciesRes.status === "fulfilled") {
           setAgencies(
-            extractList(
-              agenciesRes.value,
-              "agencies"
-            )
+            extractList(agenciesRes.value, "agencies")
           );
         } else {
           console.error(
@@ -596,14 +368,9 @@ export default function Home() {
           );
         }
 
-        /* EVENTS */
-
         if (eventsRes.status === "fulfilled") {
           setEvents(
-            extractList(
-              eventsRes.value,
-              "events"
-            )
+            extractList(eventsRes.value, "events")
           );
         } else {
           console.error(
@@ -611,8 +378,6 @@ export default function Home() {
             eventsRes.reason
           );
         }
-
-        /* EMERGENCY */
 
         if (emergencyRes.status === "fulfilled") {
           setEmergencyContacts(
@@ -646,12 +411,7 @@ export default function Home() {
     };
   }, []);
 
-  /* =======================================================
-     SEARCH
-  ======================================================= */
-
-  const normalizedSearch =
-    search.trim().toLowerCase();
+  const normalizedSearch = search.trim().toLowerCase();
 
   const searchResults = useMemo(() => {
     if (!normalizedSearch) {
@@ -662,23 +422,17 @@ export default function Home() {
       const text = [
         item?.name,
         item?.title,
-
         item?.name_en,
         item?.name_so,
-
         item?.nameEn,
         item?.nameSo,
-
         item?.title_en,
         item?.title_so,
-
         item?.titleEn,
         item?.titleSo,
-
         item?.description,
         item?.description_en,
         item?.description_so,
-
         item?.descriptionEn,
         item?.descriptionSo,
       ]
@@ -725,10 +479,6 @@ export default function Home() {
     agencies,
   ]);
 
-  /* =======================================================
-     GET NAME
-  ======================================================= */
-
   const getName = (item) => {
     if (!item) return "";
 
@@ -771,10 +521,6 @@ export default function Home() {
     );
   };
 
-  /* =======================================================
-     GET DESCRIPTION
-  ======================================================= */
-
   const getDescription = (item) => {
     if (!item) return "";
 
@@ -801,17 +547,7 @@ export default function Home() {
     );
   };
 
-  /* =======================================================
-     GET ID
-  ======================================================= */
-
-  const getId = (item) => {
-    return item?._id || item?.id;
-  };
-
-  /* =======================================================
-     SCROLL
-  ======================================================= */
+  const getId = (item) => item?._id || item?.id;
 
   const scrollTo = (id) => {
     setTimeout(() => {
@@ -823,10 +559,6 @@ export default function Home() {
         });
     }, 50);
   };
-
-  /* =======================================================
-     SERVICE CLICK
-  ======================================================= */
 
   const handleServiceClick = (service) => {
     const externalUrl =
@@ -842,7 +574,6 @@ export default function Home() {
       );
 
       navigate("/login");
-
       return;
     }
 
@@ -852,7 +583,6 @@ export default function Home() {
         "_blank",
         "noopener,noreferrer"
       );
-
       return;
     }
 
@@ -863,10 +593,6 @@ export default function Home() {
     }
   };
 
-  /* =======================================================
-     POPULAR SEARCH
-  ======================================================= */
-
   const popularSearch = (value) => {
     setSearch(value);
 
@@ -876,39 +602,19 @@ export default function Home() {
     });
   };
 
-  /* =======================================================
-     LEADER HELPERS
-  ======================================================= */
+  const getLeaderName = (leader) =>
+    language === "so" ? leader.nameSo : leader.name;
 
-  const getLeaderName = (leader) => {
-    return language === "so"
-      ? leader.nameSo
-      : leader.name;
-  };
+  const getLeaderRole = (leader) =>
+    language === "so" ? leader.roleSo : leader.role;
 
-  const getLeaderRole = (leader) => {
-    return language === "so"
-      ? leader.roleSo
-      : leader.role;
-  };
-
-  const getLeaderShortRole = (leader) => {
-    return language === "so"
+  const getLeaderShortRole = (leader) =>
+    language === "so"
       ? leader.shortRoleSo
       : leader.shortRole;
-  };
-
-  /* =======================================================
-     RENDER
-  ======================================================= */
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-
-      {/* =====================================================
-          NAVBAR
-      ====================================================== */}
-
       <Navbar
         language={language}
         setLanguage={setLanguage}
@@ -927,27 +633,16 @@ export default function Home() {
         id="home"
         className="relative overflow-hidden bg-gradient-to-br from-[#0B3D91] via-[#1261B5] to-[#27A9E8]"
       >
-        {/* Background decoration */}
-
         <div className="absolute inset-0 overflow-hidden">
-
           <div className="absolute -left-24 top-10 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
-
           <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-cyan-300/20 blur-3xl" />
-
           <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-blue-300/10 blur-3xl" />
-
         </div>
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1.1fr_.9fr] lg:px-8 lg:py-28">
-
-          {/* HERO LEFT */}
-
           <div className="text-white">
-
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur">
               <ShieldCheck size={17} />
-
               {t.official}
             </div>
 
@@ -959,10 +654,7 @@ export default function Home() {
               {t.slogan}
             </p>
 
-            {/* SEARCH */}
-
             <div className="relative mt-9 max-w-2xl">
-
               <Search
                 size={21}
                 className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"
@@ -978,11 +670,8 @@ export default function Home() {
                 className="h-16 w-full rounded-2xl border border-white/30 bg-white pl-14 pr-5 text-base font-medium text-slate-900 shadow-2xl outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-white/20"
               />
 
-              {/* SEARCH RESULTS */}
-
               {normalizedSearch && (
                 <div className="absolute left-0 right-0 top-[72px] z-40 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 text-slate-900 shadow-2xl">
-
                   <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-400">
                     {t.searchResults}
                   </div>
@@ -992,8 +681,7 @@ export default function Home() {
                       (result, index) => (
                         <button
                           key={
-                            getId(result) ||
-                            index
+                            getId(result) || index
                           }
                           type="button"
                           onClick={() => {
@@ -1022,7 +710,6 @@ export default function Home() {
                           className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-blue-50"
                         >
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#0B3D91]">
-
                             {result.type ===
                             "service" ? (
                               <FileText size={18} />
@@ -1032,11 +719,9 @@ export default function Home() {
                             ) : (
                               <Landmark size={18} />
                             )}
-
                           </div>
 
                           <div className="min-w-0 flex-1">
-
                             <p className="truncate font-semibold">
                               {getName(result)}
                             </p>
@@ -1044,7 +729,6 @@ export default function Home() {
                             <p className="text-xs capitalize text-slate-500">
                               {result.type}
                             </p>
-
                           </div>
 
                           <ChevronRight
@@ -1059,16 +743,11 @@ export default function Home() {
                       {t.noResults}
                     </div>
                   )}
-
                 </div>
               )}
-
             </div>
 
-            {/* POPULAR SEARCH */}
-
             <div className="mt-6 flex flex-wrap items-center gap-2">
-
               <span className="mr-1 text-sm font-semibold text-blue-50">
                 {t.popular}
               </span>
@@ -1090,44 +769,29 @@ export default function Home() {
                   {item}
                 </button>
               ))}
-
             </div>
-
           </div>
 
-          {/* HERO RIGHT */}
-
           <div className="flex justify-center lg:justify-end">
-
             <div className="relative">
-
               <div className="absolute inset-0 scale-110 rounded-full bg-white/20 blur-3xl" />
 
               <div className="relative flex h-72 w-72 items-center justify-center rounded-full border border-white/30 bg-white/10 shadow-2xl backdrop-blur-md sm:h-80 sm:w-80">
-
                 <div className="flex h-60 w-60 items-center justify-center rounded-full bg-white p-8 shadow-xl sm:h-[17rem] sm:w-[17rem]">
-
                   <img
                     src={SOMALIA_LOGO}
                     alt="Coat of Arms of Somalia"
                     className="h-full w-full object-contain"
-                    onError={
-                      getImageFallback
-                    }
+                    onError={getImageFallback}
                   />
-
                 </div>
-
               </div>
 
               <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-5 py-2 text-sm font-bold text-[#0B3D91] shadow-xl">
                 {t.federal}
               </div>
-
             </div>
-
           </div>
-
         </div>
       </section>
 
@@ -1139,11 +803,8 @@ export default function Home() {
         id="leadership"
         className="bg-white py-20 sm:py-24"
       >
-
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
           <div className="mx-auto max-w-2xl text-center">
-
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91]">
               <Landmark size={24} />
             </div>
@@ -1159,95 +820,88 @@ export default function Home() {
             <p className="mt-4 text-slate-500">
               {t.leadershipDesc}
             </p>
-
           </div>
 
           <div className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
+            {LEADERS.map((leader, index) => (
+              <div
+                key={leader.name}
+                className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
+              >
+                <div className="relative h-80 overflow-hidden bg-gradient-to-b from-blue-50 to-slate-100">
+                  <img
+                    src={leader.image}
+                    alt={getLeaderName(leader)}
+                    className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105"
+                    onError={getImageFallback}
+                  />
 
-            {LEADERS.map(
-              (leader, index) => (
-                <div
-                  key={leader.name}
-                  className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
-                >
+                  <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 to-transparent" />
 
-                  <div className="relative h-80 overflow-hidden bg-gradient-to-b from-blue-50 to-slate-100">
-
-                    <img
-                      src={leader.image}
-                      alt={getLeaderName(
-                        leader
-                      )}
-                      className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105"
-                      onError={
-                        getImageFallback
-                      }
-                    />
-
-                    <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 to-transparent" />
-
-                    <div className="absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-sm font-black text-[#0B3D91] shadow-lg">
-                      0{index + 1}
-                    </div>
-
-                    <div className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                      <span className="text-lg">
-                        🇸🇴
-                      </span>
-                    </div>
-
-                    <div className="absolute bottom-4 left-5 right-5">
-
-                      <span className="inline-flex max-w-full rounded-full bg-[#0B3D91] px-3 py-1 text-xs font-bold text-white shadow-lg">
-                        {getLeaderShortRole(
-                          leader
-                        )}
-                      </span>
-
-                    </div>
-
+                  <div className="absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-sm font-black text-[#0B3D91] shadow-lg">
+                    0{index + 1}
                   </div>
 
-                  <div className="p-5">
-
-                    <h3 className="min-h-[56px] text-lg font-black leading-snug text-slate-900">
-                      {getLeaderName(
-                        leader
-                      )}
-                    </h3>
-
-                    <p className="mt-2 min-h-[48px] text-sm leading-6 text-slate-500">
-                      {getLeaderRole(leader)}
-                    </p>
-
-                    <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-4">
-                      <Globe2 size={16} className="shrink-0 text-[#0B3D91]" />
-                      <span className="truncate text-xs font-bold text-slate-600">
-                        {leader.websiteName}
-                      </span>
-                    </div>
-
-                    <div className="mt-4 grid grid-cols-2 gap-2">
-                      <a href={leader.profileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-700 transition hover:border-[#0B3D91] hover:bg-blue-50 hover:text-[#0B3D91]">
-                        <FileText size={15} />
-                        {language === "so" ? "Macluumaad" : "View Profile"}
-                      </a>
-                      <a href={leader.websiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0B3D91] px-3 py-2.5 text-xs font-bold text-white transition hover:bg-[#082f70]">
-                        <ExternalLink size={15} />
-                        {language === "so" ? "Website-ka" : "Official Site"}
-                      </a>
-                    </div>
-
+                  <div className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                    <span className="text-lg">🇸🇴</span>
                   </div>
 
+                  <div className="absolute bottom-4 left-5 right-5">
+                    <span className="inline-flex max-w-full rounded-full bg-[#0B3D91] px-3 py-1 text-xs font-bold text-white shadow-lg">
+                      {getLeaderShortRole(leader)}
+                    </span>
+                  </div>
                 </div>
-              )
-            )}
 
+                <div className="p-5">
+                  <h3 className="min-h-[56px] text-lg font-black leading-snug text-slate-900">
+                    {getLeaderName(leader)}
+                  </h3>
+
+                  <p className="mt-2 min-h-[48px] text-sm leading-6 text-slate-500">
+                    {getLeaderRole(leader)}
+                  </p>
+
+                  <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-4">
+                    <Globe2
+                      size={16}
+                      className="shrink-0 text-[#0B3D91]"
+                    />
+                    <span className="truncate text-xs font-bold text-slate-600">
+                      {leader.websiteName}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-2 gap-2">
+                    <a
+                      href={leader.profileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-700 transition hover:border-[#0B3D91] hover:bg-blue-50 hover:text-[#0B3D91]"
+                    >
+                      <FileText size={15} />
+                      {language === "so"
+                        ? "Macluumaad"
+                        : "View Profile"}
+                    </a>
+
+                    <a
+                      href={leader.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0B3D91] px-3 py-2.5 text-xs font-bold text-white transition hover:bg-[#082f70]"
+                    >
+                      <ExternalLink size={15} />
+                      {language === "so"
+                        ? "Website-ka"
+                        : "Official Site"}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-
         </div>
-
       </section>
 
       {/* =====================================================
@@ -1256,147 +910,180 @@ export default function Home() {
 
       <section
         id="services"
-        className="bg-slate-50 py-20 sm:py-24"
+        className="relative overflow-hidden bg-slate-50 py-20 sm:py-24"
       >
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -left-32 top-20 h-72 w-72 rounded-full bg-blue-200/30 blur-3xl" />
+          <div className="absolute -right-32 bottom-10 h-80 w-80 rounded-full bg-cyan-200/30 blur-3xl" />
+        </div>
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
-          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-
-            <div>
-
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0B3D91]">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+            <div className="max-w-3xl">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#0B3D91]">
+                <Globe2 size={15} />
                 {t.governmentServices}
-              </p>
+              </div>
 
-              <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
+              <h2 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
                 {t.onlineServices}
               </h2>
 
-              <p className="mt-3 max-w-2xl text-slate-500">
+              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-500 sm:text-lg">
                 {t.onlineServicesDesc}
               </p>
-
             </div>
 
             <button
               type="button"
-              onClick={() =>
-                navigate("/services")
-              }
-              className="inline-flex items-center gap-2 self-start rounded-xl bg-[#0B3D91] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#082F70] sm:self-auto"
+              onClick={() => navigate("/services")}
+              className="group inline-flex items-center justify-center gap-3 self-start rounded-2xl bg-[#0B3D91] px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-blue-900/10 transition duration-300 hover:-translate-y-1 hover:bg-[#082F70] hover:shadow-xl lg:self-auto"
             >
               {t.viewAllServices}
 
-              <ArrowRight size={17} />
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 transition group-hover:translate-x-1">
+                <ArrowRight size={16} />
+              </span>
             </button>
-
           </div>
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {loading ? (
-              Array.from({
-                length: 8,
-              }).map((_, index) => (
+              Array.from({ length: 8 }).map((_, index) => (
                 <div
                   key={index}
-                  className="h-52 animate-pulse rounded-3xl bg-white shadow-sm"
-                />
+                  className="h-[300px] animate-pulse rounded-[2rem] border border-slate-200 bg-white"
+                >
+                  <div className="p-7">
+                    <div className="h-16 w-16 rounded-2xl bg-slate-200" />
+                    <div className="mt-7 h-5 w-3/4 rounded bg-slate-200" />
+                    <div className="mt-4 h-3 w-full rounded bg-slate-200" />
+                    <div className="mt-2 h-3 w-5/6 rounded bg-slate-200" />
+                    <div className="mt-2 h-3 w-2/3 rounded bg-slate-200" />
+                  </div>
+                </div>
               ))
             ) : services.length > 0 ? (
-              services
-                .slice(0, 8)
-                .map(
-                  (service, index) => (
-                    <button
-                      key={
-                        getId(service) ||
-                        index
-                      }
-                      type="button"
-                      onClick={() =>
-                        handleServiceClick(
-                          service
-                        )
-                      }
-                      className="group rounded-3xl border border-slate-200 bg-white p-6 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl"
-                    >
+              services.slice(0, 8).map((service, index) => {
+                const Icon = getServiceIcon(service?.icon);
 
-                      <div className="flex items-start justify-between">
+                const externalUrl =
+                  service?.external_url ||
+                  service?.externalUrl ||
+                  service?.url ||
+                  service?.link;
 
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91] transition group-hover:bg-[#0B3D91] group-hover:text-white">
+                return (
+                  <button
+                    key={getId(service) || index}
+                    type="button"
+                    onClick={() =>
+                      handleServiceClick(service)
+                    }
+                    className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white text-left shadow-sm transition-all duration-500 hover:-translate-y-2 hover:border-blue-200 hover:shadow-2xl"
+                  >
+                    <div className="absolute right-0 top-0 h-32 w-32 rounded-bl-full bg-gradient-to-br from-blue-50 to-cyan-50 transition duration-500 group-hover:scale-125" />
 
-                          {index % 4 === 0 ? (
-                            <FileText size={22} />
-                          ) : index % 4 === 1 ? (
-                            <BriefcaseBusiness
-                              size={22}
-                            />
-                          ) : index % 4 === 2 ? (
-                            <GraduationCap
-                              size={22}
-                            />
-                          ) : (
-                            <Globe2 size={22} />
-                          )}
+                    <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full border-[12px] border-white/70" />
 
-                        </div>
+                    <div className="relative p-7">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black tracking-widest text-slate-300">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
 
-                        <ArrowRight
-                          size={18}
-                          className="text-slate-300 transition group-hover:translate-x-1 group-hover:text-[#0B3D91]"
-                        />
-
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition-all duration-300 group-hover:border-[#0B3D91] group-hover:bg-[#0B3D91] group-hover:text-white">
+                          <ArrowRight
+                            size={16}
+                            className="transition-transform duration-300 group-hover:translate-x-0.5"
+                          />
+                        </span>
                       </div>
 
-                      <h3 className="mt-5 line-clamp-2 text-lg font-black text-slate-900">
+                      <div className="mt-5">
+                        <div className="relative inline-flex">
+                          <div className="absolute inset-0 rounded-2xl bg-blue-400/20 blur-xl transition duration-500 group-hover:bg-blue-400/30" />
+
+                          <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 text-[#0B3D91] ring-1 ring-blue-100 transition-all duration-500 group-hover:scale-110 group-hover:from-[#0B3D91] group-hover:to-[#1261B5] group-hover:text-white group-hover:shadow-lg">
+                            <Icon
+                              size={30}
+                              strokeWidth={1.8}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <h3 className="mt-7 min-h-[56px] text-xl font-black leading-7 text-slate-900 transition-colors duration-300 group-hover:text-[#0B3D91]">
                         {getName(service)}
                       </h3>
 
-                      <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-500">
-                        {getDescription(
-                          service
-                        )}
+                      <p className="mt-3 min-h-[72px] line-clamp-3 text-sm leading-6 text-slate-500">
+                        {getDescription(service)}
                       </p>
 
-                      {service.external_url ||
-                      service.externalUrl ||
-                      service.url ||
-                      service.link ? (
-                        <div className="mt-4 flex items-center gap-1 text-xs font-bold text-[#0B3D91]">
+                      <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
+                        {externalUrl ? (
+                          <div className="inline-flex items-center gap-2 text-xs font-black text-[#0B3D91]">
+                            <span className="flex h-2 w-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-300" />
+                            {t.onlineService}
+                          </div>
+                        ) : (
+                          <span className="text-xs font-bold text-slate-400">
+                            Government Service
+                          </span>
+                        )}
 
-                          <ExternalLink
-                            size={13}
-                          />
+                        <span className="inline-flex items-center gap-1 text-xs font-black text-slate-400 transition group-hover:text-[#0B3D91]">
+                          {language === "so"
+                            ? "Fur"
+                            : "Open"}
 
-                          {t.onlineService}
+                          {externalUrl ? (
+                            <ExternalLink size={13} />
+                          ) : (
+                            <ChevronRight size={14} />
+                          )}
+                        </span>
+                      </div>
+                    </div>
 
-                        </div>
-                      ) : null}
-
-                    </button>
-                  )
-                )
+                    <div className="absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r from-[#0B3D91] to-[#27A9E8] transition-all duration-500 group-hover:w-full" />
+                  </button>
+                );
+              })
             ) : (
-              <div className="col-span-full rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
+              <div className="col-span-full rounded-[2rem] border border-dashed border-slate-300 bg-white p-14 text-center shadow-sm">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91]">
+                  <FileText size={30} />
+                </div>
 
-                <FileText
-                  className="mx-auto text-slate-300"
-                  size={40}
-                />
-
-                <p className="mt-4 font-semibold text-slate-500">
+                <h3 className="mt-5 text-lg font-black text-slate-900">
                   {t.noResults}
-                </p>
+                </h3>
 
+                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                  No government services are currently available.
+                </p>
               </div>
             )}
-
           </div>
 
-        </div>
+          {services.length > 8 && (
+            <div className="mt-10 flex justify-center">
+              <button
+                type="button"
+                onClick={() => navigate("/services")}
+                className="group inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-6 py-3.5 text-sm font-black text-slate-700 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:text-[#0B3D91] hover:shadow-lg"
+              >
+                {t.viewAllServices}
 
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-50 text-[#0B3D91] transition group-hover:translate-x-1">
+                  <ArrowRight size={15} />
+                </span>
+              </button>
+            </div>
+          )}
+        </div>
       </section>
 
       {/* =====================================================
@@ -1404,11 +1091,8 @@ export default function Home() {
       ====================================================== */}
 
       <section className="bg-white py-20 sm:py-24">
-
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
           <div className="text-center">
-
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0B3D91]">
               {t.nationalCalendar}
             </p>
@@ -1420,83 +1104,56 @@ export default function Home() {
             <p className="mx-auto mt-3 max-w-2xl text-slate-500">
               {t.importantDatesDesc}
             </p>
-
           </div>
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-
             {events.length > 0 ? (
-              events.slice(0, 6).map(
-                (event, index) => (
-                  <div
-                    key={
-                      getId(event) ||
-                      index
-                    }
-                    className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-                  >
-
-                    <div className="flex gap-4">
-
-                      <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91]">
-
-                        <CalendarDays
-                          size={21}
-                        />
-
-                        <span className="mt-1 text-[10px] font-black uppercase">
-                          {event.month ||
-                            "DATE"}
-                        </span>
-
-                      </div>
-
-                      <div className="min-w-0">
-
-                        <h3 className="font-black text-slate-900">
-                          {getName(event)}
-                        </h3>
-
-                        <p className="mt-1 line-clamp-3 text-sm leading-6 text-slate-500">
-                          {getDescription(
-                            event
-                          )}
-                        </p>
-
-                        {event.startDate && (
-                          <p className="mt-3 text-xs font-bold text-[#0B3D91]">
-                            {new Date(
-                              event.startDate
-                            ).toLocaleDateString()}
-                          </p>
-                        )}
-
-                      </div>
-
+              events.slice(0, 6).map((event, index) => (
+                <div
+                  key={getId(event) || index}
+                  className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                >
+                  <div className="flex gap-4">
+                    <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91]">
+                      <CalendarDays size={21} />
+                      <span className="mt-1 text-[10px] font-black uppercase">
+                        {event.month || "DATE"}
+                      </span>
                     </div>
 
+                    <div className="min-w-0">
+                      <h3 className="font-black text-slate-900">
+                        {getName(event)}
+                      </h3>
+
+                      <p className="mt-1 line-clamp-3 text-sm leading-6 text-slate-500">
+                        {getDescription(event)}
+                      </p>
+
+                      {event.startDate && (
+                        <p className="mt-3 text-xs font-bold text-[#0B3D91]">
+                          {new Date(
+                            event.startDate
+                          ).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                )
-              )
+                </div>
+              ))
             ) : (
               <div className="col-span-full rounded-3xl bg-slate-50 p-12 text-center">
-
                 <CalendarDays
                   className="mx-auto text-slate-300"
                   size={42}
                 />
-
                 <p className="mt-4 text-slate-500">
                   {t.noResults}
                 </p>
-
               </div>
             )}
-
           </div>
-
         </div>
-
       </section>
 
       {/* =====================================================
@@ -1507,13 +1164,9 @@ export default function Home() {
         id="ministries"
         className="bg-slate-50 py-20 sm:py-24"
       >
-
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-
             <div>
-
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0B3D91]">
                 {t.federalGovernment}
               </p>
@@ -1525,91 +1178,64 @@ export default function Home() {
               <p className="mt-3 max-w-2xl text-slate-500">
                 {t.federalMinistriesDesc}
               </p>
-
             </div>
 
             <button
               type="button"
-              onClick={() =>
-                navigate("/ministries")
-              }
+              onClick={() => navigate("/ministries")}
               className="flex items-center gap-2 text-sm font-bold text-[#0B3D91] hover:text-[#082F70]"
             >
               {t.viewAllServices}
-
               <ChevronRight size={17} />
             </button>
-
           </div>
 
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
             {ministries.length > 0 ? (
-              ministries
-                .slice(0, 9)
-                .map(
-                  (ministry, index) => (
-                    <button
-                      type="button"
-                      key={
-                        getId(ministry) ||
-                        index
-                      }
-                      onClick={() =>
-                        navigate(
-                          `/ministries/${getId(
-                            ministry
-                          )}`
-                        )
-                      }
-                      className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:border-blue-200 hover:shadow-lg"
-                    >
+              ministries.slice(0, 9).map((ministry, index) => (
+                <button
+                  type="button"
+                  key={getId(ministry) || index}
+                  onClick={() =>
+                    navigate(
+                      `/ministries/${getId(ministry)}`
+                    )
+                  }
+                  className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:border-blue-200 hover:shadow-lg"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91] transition group-hover:bg-[#0B3D91] group-hover:text-white">
+                    <Building2 size={21} />
+                  </div>
 
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91] transition group-hover:bg-[#0B3D91] group-hover:text-white">
-                        <Building2 size={21} />
-                      </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate font-bold text-slate-900">
+                      {getName(ministry)}
+                    </h3>
 
-                      <div className="min-w-0 flex-1">
+                    <p className="mt-1 line-clamp-2 text-sm text-slate-500">
+                      {getDescription(ministry)}
+                    </p>
+                  </div>
 
-                        <h3 className="truncate font-bold text-slate-900">
-                          {getName(ministry)}
-                        </h3>
-
-                        <p className="mt-1 line-clamp-2 text-sm text-slate-500">
-                          {getDescription(
-                            ministry
-                          )}
-                        </p>
-
-                      </div>
-
-                      <ChevronRight
-                        size={18}
-                        className="shrink-0 text-slate-300 group-hover:text-[#0B3D91]"
-                      />
-
-                    </button>
-                  )
-                )
+                  <ChevronRight
+                    size={18}
+                    className="shrink-0 text-slate-300 group-hover:text-[#0B3D91]"
+                  />
+                </button>
+              ))
             ) : (
               <div className="col-span-full rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-
                 <Building2
                   className="mx-auto text-slate-300"
                   size={42}
                 />
-
                 <p className="mt-4 text-slate-500">
                   {t.noResults}
                 </p>
-
               </div>
             )}
-
           </div>
-
         </div>
-
       </section>
 
       {/* =====================================================
@@ -1620,11 +1246,8 @@ export default function Home() {
         id="agencies"
         className="bg-white py-20 sm:py-24"
       >
-
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
           <div className="text-center">
-
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0B3D91]">
               {t.nationalInstitutions}
             </p>
@@ -1636,60 +1259,41 @@ export default function Home() {
             <p className="mx-auto mt-3 max-w-2xl text-slate-500">
               {t.nationalAgenciesDesc}
             </p>
-
           </div>
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-
             {agencies.length > 0 ? (
-              agencies
-                .slice(0, 8)
-                .map(
-                  (agency, index) => (
-                    <div
-                      key={
-                        getId(agency) ||
-                        index
-                      }
-                      className="group rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl"
-                    >
+              agencies.slice(0, 8).map((agency, index) => (
+                <div
+                  key={getId(agency) || index}
+                  className="group rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl"
+                >
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91] transition group-hover:bg-[#0B3D91] group-hover:text-white">
+                    <Landmark size={24} />
+                  </div>
 
-                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-[#0B3D91] transition group-hover:bg-[#0B3D91] group-hover:text-white">
-                        <Landmark size={24} />
-                      </div>
+                  <h3 className="mt-5 font-black text-slate-900">
+                    {getName(agency)}
+                  </h3>
 
-                      <h3 className="mt-5 font-black text-slate-900">
-                        {getName(agency)}
-                      </h3>
-
-                      <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-500">
-                        {getDescription(
-                          agency
-                        )}
-                      </p>
-
-                    </div>
-                  )
-                )
+                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-500">
+                    {getDescription(agency)}
+                  </p>
+                </div>
+              ))
             ) : (
               <div className="col-span-full rounded-3xl bg-slate-50 p-12 text-center">
-
                 <Landmark
                   className="mx-auto text-slate-300"
                   size={42}
                 />
-
                 <p className="mt-4 text-slate-500">
                   {t.noResults}
                 </p>
-
               </div>
             )}
-
           </div>
-
         </div>
-
       </section>
 
       {/* =====================================================
@@ -1700,11 +1304,8 @@ export default function Home() {
         id="emergency"
         className="bg-gradient-to-br from-[#0B3D91] to-[#1261B5] py-20"
       >
-
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
           <div className="flex flex-col gap-4 text-center text-white">
-
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-100">
               {t.publicSafety}
             </p>
@@ -1716,78 +1317,59 @@ export default function Home() {
             <p className="mx-auto max-w-2xl text-blue-100">
               {t.emergencyDesc}
             </p>
-
           </div>
 
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
-            {emergencyContacts.length >
-            0 ? (
+            {emergencyContacts.length > 0 ? (
               emergencyContacts
                 .slice(0, 8)
-                .map(
-                  (contact, index) => {
-                    const phone =
-                      contact.phone ||
-                      contact.phone_number ||
-                      contact.phoneNumber ||
-                      contact.number ||
-                      "";
+                .map((contact, index) => {
+                  const phone =
+                    contact.phone ||
+                    contact.phone_number ||
+                    contact.phoneNumber ||
+                    contact.number ||
+                    "";
 
-                    return (
-                      <a
-                        key={
-                          getId(contact) ||
-                          index
-                        }
-                        href={`tel:${phone}`}
-                        className="group rounded-3xl border border-white/15 bg-white/10 p-6 text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white hover:text-slate-900"
-                      >
-
-                        <div className="flex items-center gap-4">
-
-                          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-white group-hover:bg-blue-50 group-hover:text-[#0B3D91]">
-                            <Phone size={22} />
-                          </div>
-
-                          <div className="min-w-0">
-
-                            <h3 className="truncate font-black">
-                              {getName(contact)}
-                            </h3>
-
-                            <p className="mt-1 text-sm font-bold opacity-80">
-                              {phone ||
-                                "N/A"}
-                            </p>
-
-                          </div>
-
+                  return (
+                    <a
+                      key={
+                        getId(contact) || index
+                      }
+                      href={`tel:${phone}`}
+                      className="group rounded-3xl border border-white/15 bg-white/10 p-6 text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white hover:text-slate-900"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-white group-hover:bg-blue-50 group-hover:text-[#0B3D91]">
+                          <Phone size={22} />
                         </div>
 
-                      </a>
-                    );
-                  }
-                )
+                        <div className="min-w-0">
+                          <h3 className="truncate font-black">
+                            {getName(contact)}
+                          </h3>
+
+                          <p className="mt-1 text-sm font-bold opacity-80">
+                            {phone || "N/A"}
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  );
+                })
             ) : (
               <div className="col-span-full rounded-3xl border border-white/20 bg-white/10 p-10 text-center text-white">
-
                 <Phone
                   className="mx-auto"
                   size={40}
                 />
-
                 <p className="mt-4">
                   {t.noResults}
                 </p>
-
               </div>
             )}
-
           </div>
-
         </div>
-
       </section>
 
       {/* =====================================================
@@ -1798,11 +1380,8 @@ export default function Home() {
         id="events"
         className="bg-slate-50 py-20 sm:py-24"
       >
-
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
           <div>
-
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#0B3D91]">
               {t.latestUpdates}
             </p>
@@ -1814,174 +1393,120 @@ export default function Home() {
             <p className="mt-3 max-w-2xl text-slate-500">
               {t.latestEventsDesc}
             </p>
-
           </div>
 
           <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-
             {events.length > 0 ? (
-              events
-                .slice(0, 6)
-                .map(
-                  (event, index) => (
-                    <article
-                      key={
-                        getId(event) ||
-                        index
-                      }
-                      className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
-                    >
+              events.slice(0, 6).map((event, index) => (
+                <article
+                  key={getId(event) || index}
+                  className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                >
+                  {event.image ||
+                  event.imageUrl ||
+                  event.image_url ? (
+                    <div className="h-52 overflow-hidden">
+                      <img
+                        src={
+                          event.image ||
+                          event.imageUrl ||
+                          event.image_url
+                        }
+                        alt={getName(event)}
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                        onError={getImageFallback}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex h-52 items-center justify-center bg-gradient-to-br from-blue-50 to-sky-100">
+                      <CalendarDays
+                        size={52}
+                        className="text-blue-300"
+                      />
+                    </div>
+                  )}
 
-                      {/* EVENT IMAGE */}
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#0B3D91]">
+                      <CalendarDays size={14} />
+                      {event.startDate
+                        ? new Date(
+                            event.startDate
+                          ).toLocaleDateString()
+                        : "Government Event"}
+                    </div>
 
-                      {event.image ||
-                      event.imageUrl ||
-                      event.image_url ? (
-                        <div className="h-52 overflow-hidden">
+                    <h3 className="mt-3 text-xl font-black text-slate-900">
+                      {getName(event)}
+                    </h3>
 
-                          <img
-                            src={
-                              event.image ||
-                              event.imageUrl ||
-                              event.image_url
-                            }
-                            alt={getName(event)}
-                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                            onError={
-                              getImageFallback
-                            }
-                          />
+                    <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-500">
+                      {getDescription(event)}
+                    </p>
 
-                        </div>
-                      ) : (
-                        <div className="flex h-52 items-center justify-center bg-gradient-to-br from-blue-50 to-sky-100">
-
-                          <CalendarDays
-                            size={52}
-                            className="text-blue-300"
-                          />
-
-                        </div>
-                      )}
-
-                      <div className="p-6">
-
-                        <div className="flex items-center gap-2 text-xs font-bold text-[#0B3D91]">
-
-                          <CalendarDays
-                            size={14}
-                          />
-
-                          {event.startDate
-                            ? new Date(
-                                event.startDate
-                              ).toLocaleDateString()
-                            : "Government Event"}
-
-                        </div>
-
-                        <h3 className="mt-3 text-xl font-black text-slate-900">
-                          {getName(event)}
-                        </h3>
-
-                        <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-500">
-                          {getDescription(
-                            event
-                          )}
-                        </p>
-
-                        {event.external_url ||
-                        event.externalUrl ||
-                        event.url ||
-                        event.link ? (
-                          <button
-                            type="button"
-                            className="mt-5 flex items-center gap-2 text-sm font-bold text-[#0B3D91]"
-                            onClick={() =>
-                              window.open(
-                                event.external_url ||
-                                  event.externalUrl ||
-                                  event.url ||
-                                  event.link,
-                                "_blank",
-                                "noopener,noreferrer"
-                              )
-                            }
-                          >
-                            {t.learnMore}
-
-                            <ArrowRight
-                              size={15}
-                            />
-                          </button>
-                        ) : null}
-
-                      </div>
-
-                    </article>
-                  )
-                )
+                    {event.external_url ||
+                    event.externalUrl ||
+                    event.url ||
+                    event.link ? (
+                      <button
+                        type="button"
+                        className="mt-5 flex items-center gap-2 text-sm font-bold text-[#0B3D91]"
+                        onClick={() =>
+                          window.open(
+                            event.external_url ||
+                              event.externalUrl ||
+                              event.url ||
+                              event.link,
+                            "_blank",
+                            "noopener,noreferrer"
+                          )
+                        }
+                      >
+                        {t.learnMore}
+                        <ArrowRight size={15} />
+                      </button>
+                    ) : null}
+                  </div>
+                </article>
+              ))
             ) : (
               <div className="col-span-full rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-
                 <CalendarDays
                   className="mx-auto text-slate-300"
                   size={45}
                 />
-
                 <p className="mt-4 text-slate-500">
                   {t.noResults}
                 </p>
-
               </div>
             )}
-
           </div>
-
         </div>
-
       </section>
 
       {/* =====================================================
           ABOUT / CTA
       ====================================================== */}
 
-      <section
-        id="about"
-        className="bg-white py-20"
-      >
-
+      <section id="about" className="bg-white py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
           <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#0B3D91] via-[#1261B5] to-[#0878C9] px-7 py-12 text-white shadow-2xl sm:px-12 lg:px-16 lg:py-16">
-
-            {/* Decorative circles */}
-
             <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-
             <div className="absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-cyan-300/10 blur-3xl" />
 
             <div className="relative grid items-center gap-10 lg:grid-cols-[1fr_auto]">
-
               <div>
-
                 <div className="flex items-center gap-3">
-
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-lg">
-
                     <img
                       src={SOMALIA_LOGO}
                       alt="Somalia"
                       className="h-11 w-11 object-contain"
-                      onError={
-                        getImageFallback
-                      }
+                      onError={getImageFallback}
                     />
-
                   </div>
 
                   <div>
-
                     <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-100">
                       {t.federal}
                     </p>
@@ -1989,9 +1514,7 @@ export default function Home() {
                     <h2 className="mt-1 text-2xl font-black sm:text-3xl">
                       Digital Government Portal
                     </h2>
-
                   </div>
-
                 </div>
 
                 <p className="mt-6 max-w-2xl leading-7 text-blue-50/90">
@@ -1999,7 +1522,6 @@ export default function Home() {
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-3">
-
                   <div className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold">
                     🇸🇴 Somalia
                   </div>
@@ -2015,29 +1537,20 @@ export default function Home() {
                   <div className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold">
                     Digital Services
                   </div>
-
                 </div>
-
               </div>
 
               <button
                 type="button"
-                onClick={() =>
-                  scrollTo("services")
-                }
+                onClick={() => scrollTo("services")}
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-4 font-black text-[#0B3D91] shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
               >
                 {t.exploreServices}
-
                 <ArrowRight size={18} />
               </button>
-
             </div>
-
           </div>
-
         </div>
-
       </section>
 
       {/* =====================================================
@@ -2045,32 +1558,20 @@ export default function Home() {
       ====================================================== */}
 
       <footer className="border-t border-slate-200 bg-white">
-
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-
           <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-
-            {/* BRAND */}
-
             <div>
-
               <div className="flex items-center gap-3">
-
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-200">
-
                   <img
                     src={SOMALIA_LOGO}
                     alt="Somalia"
                     className="h-11 w-11 object-contain"
-                    onError={
-                      getImageFallback
-                    }
+                    onError={getImageFallback}
                   />
-
                 </div>
 
                 <div>
-
                   <p className="font-black text-[#0B3D91]">
                     FEDERAL REPUBLIC
                   </p>
@@ -2078,32 +1579,23 @@ export default function Home() {
                   <p className="text-xs font-semibold tracking-[0.15em] text-slate-500">
                     OF SOMALIA
                   </p>
-
                 </div>
-
               </div>
 
               <p className="mt-5 text-sm leading-6 text-slate-500">
                 {t.footerDescription}
               </p>
-
             </div>
 
-            {/* QUICK LINKS */}
-
             <div>
-
               <h3 className="font-black text-slate-900">
                 {t.quickLinks}
               </h3>
 
               <div className="mt-4 space-y-3">
-
                 <button
                   type="button"
-                  onClick={() =>
-                    scrollTo("services")
-                  }
+                  onClick={() => scrollTo("services")}
                   className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.services}
@@ -2111,9 +1603,7 @@ export default function Home() {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    scrollTo("ministries")
-                  }
+                  onClick={() => scrollTo("ministries")}
                   className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.ministries}
@@ -2121,9 +1611,7 @@ export default function Home() {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    scrollTo("agencies")
-                  }
+                  onClick={() => scrollTo("agencies")}
                   className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.agencies}
@@ -2131,33 +1619,23 @@ export default function Home() {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    scrollTo("events")
-                  }
+                  onClick={() => scrollTo("events")}
                   className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.events}
                 </button>
-
               </div>
-
             </div>
 
-            {/* GOVERNMENT */}
-
             <div>
-
               <h3 className="font-black text-slate-900">
                 {t.government}
               </h3>
 
               <div className="mt-4 space-y-3">
-
                 <button
                   type="button"
-                  onClick={() =>
-                    scrollTo("leadership")
-                  }
+                  onClick={() => scrollTo("leadership")}
                   className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.leadership}
@@ -2165,9 +1643,7 @@ export default function Home() {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    scrollTo("ministries")
-                  }
+                  onClick={() => scrollTo("ministries")}
                   className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.federalMinistries}
@@ -2175,9 +1651,7 @@ export default function Home() {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    scrollTo("agencies")
-                  }
+                  onClick={() => scrollTo("agencies")}
                   className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.nationalAgencies}
@@ -2185,28 +1659,20 @@ export default function Home() {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    scrollTo("emergency")
-                  }
+                  onClick={() => scrollTo("emergency")}
                   className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.emergency}
                 </button>
-
               </div>
-
             </div>
 
-            {/* SUPPORT */}
-
             <div>
-
               <h3 className="font-black text-slate-900">
                 {t.support}
               </h3>
 
               <div className="mt-4 space-y-3">
-
                 <button
                   type="button"
                   className="block text-sm text-slate-500 hover:text-[#0B3D91]"
@@ -2223,9 +1689,7 @@ export default function Home() {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    scrollTo("emergency")
-                  }
+                  onClick={() => scrollTo("emergency")}
                   className="block text-sm text-slate-500 hover:text-[#0B3D91]"
                 >
                   {t.contact}
@@ -2234,25 +1698,17 @@ export default function Home() {
                 {!user && (
                   <button
                     type="button"
-                    onClick={() =>
-                      navigate("/register")
-                    }
+                    onClick={() => navigate("/register")}
                     className="block text-sm font-bold text-[#0B3D91]"
                   >
                     {t.register}
                   </button>
                 )}
-
               </div>
-
             </div>
-
           </div>
 
-          {/* COPYRIGHT */}
-
           <div className="mt-12 flex flex-col gap-4 border-t border-slate-200 pt-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-
             <p>
               © {new Date().getFullYear()}{" "}
               Federal Republic of Somalia.{" "}
@@ -2260,7 +1716,6 @@ export default function Home() {
             </p>
 
             <div className="flex items-center gap-2">
-
               <Star
                 size={15}
                 className="fill-current text-blue-500"
@@ -2271,15 +1726,10 @@ export default function Home() {
                   ? "Nabad, Horumar iyo Barwaaqo"
                   : "Peace, Progress, and Prosperity"}
               </span>
-
             </div>
-
           </div>
-
         </div>
-
       </footer>
-
     </div>
   );
 }

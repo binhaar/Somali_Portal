@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Contact from "./pages/Contact";
+import PublicServices from "./pages/Services";
 
 // =========================================================
 // ADMIN COMPONENTS
@@ -22,7 +23,7 @@ import AdminLayout from "./layouts/AdminLayout";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Users from "./pages/admin/Users";
-import Services from "./pages/admin/Services";
+import AdminServices from "./pages/admin/Services";
 import Categories from "./pages/admin/Categories";
 import Ministries from "./pages/admin/Ministries";
 import Agencies from "./pages/admin/Agencies";
@@ -69,6 +70,12 @@ function App() {
         element={<Contact />}
       />
 
+      {/* PUBLIC SERVICES */}
+      <Route
+        path="/services"
+        element={<PublicServices />}
+      />
+
 
       {/* =====================================================
           ADMIN ROUTES
@@ -78,9 +85,7 @@ function App() {
         path="/admin"
         element={<AdminRoute />}
       >
-        <Route
-          element={<AdminLayout />}
-        >
+        <Route element={<AdminLayout />}>
 
           {/* /admin → /admin/dashboard */}
           <Route
@@ -93,109 +98,73 @@ function App() {
             }
           />
 
-          {/* =================================================
-              DASHBOARD
-          ================================================= */}
-
+          {/* DASHBOARD */}
           <Route
             path="dashboard"
             element={<AdminDashboard />}
           />
 
-          {/* =================================================
-              USERS
-          ================================================= */}
-
+          {/* USERS */}
           <Route
             path="users"
             element={<Users />}
           />
 
-          {/* =================================================
-              SERVICES
-          ================================================= */}
-
+          {/* ADMIN SERVICES */}
           <Route
             path="services"
-            element={<Services />}
+            element={<AdminServices />}
           />
 
-          {/* =================================================
-              CATEGORIES
-          ================================================= */}
-
+          {/* CATEGORIES */}
           <Route
             path="categories"
             element={<Categories />}
           />
 
-          {/* =================================================
-              MINISTRIES
-          ================================================= */}
-
+          {/* MINISTRIES */}
           <Route
             path="ministries"
             element={<Ministries />}
           />
 
-          {/* =================================================
-              AGENCIES
-          ================================================= */}
-
+          {/* AGENCIES */}
           <Route
             path="agencies"
             element={<Agencies />}
           />
 
-          {/* =================================================
-              PROVINCES
-          ================================================= */}
-
+          {/* PROVINCES */}
           <Route
             path="provinces"
             element={<Provinces />}
           />
 
-          {/* =================================================
-              CABINET
-          ================================================= */}
-
+          {/* CABINET */}
           <Route
             path="cabinet"
             element={<Cabinet />}
           />
 
-          {/* =================================================
-              NEWS
-          ================================================= */}
-
+          {/* NEWS */}
           <Route
             path="news"
             element={<News />}
           />
 
-          {/* =================================================
-              EVENTS
-          ================================================= */}
-
+          {/* EVENTS */}
           <Route
             path="events"
             element={<Events />}
           />
 
-          {/* =================================================
-              EMERGENCY CONTACTS
-          ================================================= */}
-
+          {/* EMERGENCY CONTACTS */}
           <Route
             path="emergency-contacts"
             element={<EmergencyContacts />}
           />
 
-          {/* =================================================
-              SETTINGS
-          ================================================= */}
-
+          {/* SETTINGS */}
           <Route
             path="settings"
             element={<Settings />}
@@ -209,7 +178,6 @@ function App() {
           404
       ===================================================== */}
 
-      {/* Any unknown URL → Home */}
       <Route
         path="*"
         element={
