@@ -85,28 +85,6 @@ export default function Navbar({
       logout: "Ka bax",
       language: "Luqad",
     },
-
-    ar: {
-      home: "الرئيسية",
-      nation: "الوطن",
-      government: "الحكومة",
-      services: "الخدمات",
-      contact: "اتصل بنا",
-
-      constitution: "الدستور",
-      vision: "الرؤية الوطنية 2060",
-      memberStates: "الولايات الأعضاء",
-
-      executive: "القيادة التنفيذية",
-      ministries: "الوزارات الاتحادية",
-      agencies: "الوكالات الوطنية",
-
-      login: "تسجيل الدخول",
-      register: "إنشاء حساب",
-      dashboard: "لوحة التحكم",
-      logout: "تسجيل الخروج",
-      language: "اللغة",
-    },
   };
 
   const l = labels[language] || labels.en;
@@ -221,8 +199,6 @@ export default function Navbar({
 
   /* =====================================================
      GOVERNMENT MENU
-
-     Cabinet + Parliament intentionally removed
   ====================================================== */
 
   const governmentItems = [
@@ -351,13 +327,13 @@ export default function Navbar({
             onClick={handleHome}
             className="flex items-center gap-3"
           >
-           <div className="flex h-14 w-14 items-center justify-center">
-             <img
-               src={SOMALIA_LOGO}
-               alt="Federal Government of Somalia"
-               className="h-full w-full object-contain"
-               onError={getImageFallback}
-                />
+            <div className="flex h-14 w-14 items-center justify-center">
+              <img
+                src={SOMALIA_LOGO}
+                alt="Federal Government of Somalia"
+                className="h-full w-full object-contain"
+                onError={getImageFallback}
+              />
             </div>
 
             <div className="hidden text-left sm:block">
@@ -399,9 +375,7 @@ export default function Navbar({
               {l.home}
             </button>
 
-            {/* =================================================
-                THE NATION
-            ================================================== */}
+            {/* THE NATION */}
 
             <div className="relative">
               <button
@@ -446,9 +420,7 @@ export default function Navbar({
               )}
             </div>
 
-            {/* =================================================
-                GOVERNMENT
-            ================================================== */}
+            {/* GOVERNMENT */}
 
             <div className="relative">
               <button
@@ -493,9 +465,7 @@ export default function Navbar({
               )}
             </div>
 
-            {/* =================================================
-                SERVICES
-            ================================================== */}
+            {/* SERVICES */}
 
             <button
               type="button"
@@ -517,9 +487,7 @@ export default function Navbar({
               {l.services}
             </button>
 
-            {/* =================================================
-                CONTACT
-            ================================================== */}
+            {/* CONTACT */}
 
             <button
               type="button"
@@ -551,7 +519,6 @@ export default function Navbar({
             ================================================== */}
 
             <div className="relative">
-
               <button
                 type="button"
                 onClick={() =>
@@ -583,8 +550,6 @@ export default function Navbar({
 
                 {language === "so"
                   ? "SO"
-                  : language === "ar"
-                  ? "AR"
                   : "EN"}
 
                 <ChevronDown size={14} />
@@ -610,7 +575,6 @@ export default function Navbar({
                   {[
                     ["en", "English"],
                     ["so", "Somali"],
-                    ["ar", "Arabic"],
                   ].map(([code, name]) => (
                     <button
                       key={code}
@@ -627,7 +591,6 @@ export default function Navbar({
                         text-sm
                         font-semibold
                         transition
-
                         ${
                           language === code
                             ? "bg-blue-50 text-[#0B3D91]"
@@ -785,7 +748,6 @@ export default function Navbar({
                     {/* USER INFO */}
 
                     <div className="border-b border-slate-100 px-3 py-3">
-
                       <p className="text-sm font-black text-slate-900">
                         {user.firstName
                           ? `${user.firstName} ${
@@ -797,7 +759,6 @@ export default function Navbar({
                       <p className="mt-1 truncate text-xs text-slate-500">
                         {user.email}
                       </p>
-
                     </div>
 
                     {/* ADMIN DASHBOARD */}
@@ -943,18 +904,14 @@ export default function Navbar({
                 {l.home}
               </button>
 
-              {/* =================================================
-                  MOBILE NATION
-              ================================================== */}
+              {/* MOBILE NATION */}
 
               <div>
-
                 <button
                   type="button"
                   onClick={() =>
                     setOpenMenu(
-                      openMenu ===
-                        "mobileNation"
+                      openMenu === "mobileNation"
                         ? null
                         : "mobileNation"
                     )
@@ -1038,12 +995,9 @@ export default function Navbar({
                 )}
               </div>
 
-              {/* =================================================
-                  MOBILE GOVERNMENT
-              ================================================== */}
+              {/* MOBILE GOVERNMENT */}
 
               <div>
-
                 <button
                   type="button"
                   onClick={() =>
@@ -1197,7 +1151,6 @@ export default function Navbar({
                 pt-4
               "
             >
-
               <p
                 className="
                   mb-2
@@ -1212,12 +1165,11 @@ export default function Navbar({
                 {l.language}
               </p>
 
-              <div className="grid grid-cols-3 gap-2 px-4">
+              <div className="grid grid-cols-2 gap-2 px-4">
 
                 {[
                   ["en", "English"],
                   ["so", "Somali"],
-                  ["ar", "Arabic"],
                 ].map(([code, name]) => (
                   <button
                     key={code}
@@ -1233,7 +1185,6 @@ export default function Navbar({
                       text-xs
                       font-bold
                       transition
-
                       ${
                         language === code
                           ? "border-[#0B3D91] bg-blue-50 text-[#0B3D91]"
