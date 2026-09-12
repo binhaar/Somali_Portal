@@ -8,45 +8,43 @@ import React, {
 
 import api from "../services/api";
 
-// =========================================================
-// AUTH CONTEXT
-// =========================================================
-
 export const AuthContext = createContext(null);
 
-// =========================================================
-// USE AUTH HOOK
-// =========================================================
+/*
+|--------------------------------------------------------------------------
+| useAuth
+|--------------------------------------------------------------------------
+*/
 
 export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
     throw new Error(
-      "useAuth must be used inside an AuthProvider"
+      "useAuth must be used inside AuthProvider"
     );
   }
 
   return context;
 }
 
-// =========================================================
-// AUTH PROVIDER
-// =========================================================
+/*
+|--------------------------------------------------------------------------
+| AuthProvider
+|--------------------------------------------------------------------------
+*/
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // =======================================================
-  // AUTHENTICATION STATUS
-  // =======================================================
-
   const isAuthenticated = Boolean(user);
 
-  // =======================================================
-  // CHECK CURRENT SESSION
-  // =======================================================
+  /*
+  |--------------------------------------------------------------------------
+  | Check Current Session
+  |--------------------------------------------------------------------------
+  */
 
   const checkSession = useCallback(async () => {
     try {
@@ -63,26 +61,28 @@ export function AuthProvider({ children }) {
 
       return currentUser;
     } catch (error) {
-      // No valid session
       setUser(null);
-
       return null;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // =======================================================
-  // RUN SESSION CHECK WHEN APP STARTS
-  // =======================================================
+  /*
+  |--------------------------------------------------------------------------
+  | Check Session On App Start
+  |--------------------------------------------------------------------------
+  */
 
   useEffect(() => {
     checkSession();
   }, [checkSession]);
 
-  // =======================================================
-  // LOGIN
-  // =======================================================
+  /*
+  |--------------------------------------------------------------------------
+  | Login
+  |--------------------------------------------------------------------------
+  */
 
   const login = async (email, password) => {
     try {
@@ -102,8 +102,6 @@ export function AuthProvider({ children }) {
         );
       }
 
-      // Save authenticated user
-      // JWT/session cookie is handled by backend
       setUser(loggedInUser);
 
       return {
@@ -126,9 +124,51 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // =======================================================
-  // LOGOUT
-  // =======================================================
+  /*
+  |--------------------------------------------------------------------------
+  | Register
+  |--------------------------------------------------------------------------
+  */
+
+  const register = async (payload) => {
+    try {
+      setLoading(true);
+
+      const response = await api.post(
+        "/auth/register",
+        payload
+      );
+
+      return {
+        success: true,
+        data: response.data,
+        user: response.data?.user || null,
+        message:
+          response.data?.message ||
+          "Account created successfully.",
+      };
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Registration failed. Please try again.";
+
+      return {
+        success: false,
+        message,
+        error: error.response?.data || error,
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Logout
+  |--------------------------------------------------------------------------
+  */
 
   const logout = async () => {
     try {
@@ -140,41 +180,45 @@ export function AuthProvider({ children }) {
           error.message
       );
     } finally {
-      // Always remove user from frontend state
       setUser(null);
     }
   };
 
-  // =======================================================
-  // REFRESH USER
-  // =======================================================
+  /*
+  |--------------------------------------------------------------------------
+  | Refresh User
+  |--------------------------------------------------------------------------
+  */
 
   const refreshUser = async () => {
     return await checkSession();
   };
 
-  // =======================================================
-  // CONTEXT VALUE
-  // =======================================================
+  /*
+  |--------------------------------------------------------------------------
+  | Context Value
+  |--------------------------------------------------------------------------
+  */
 
   const value = {
     user,
     setUser,
-
     loading,
-
     isAuthenticated,
 
     login,
+    register,
     logout,
 
     checkSession,
     refreshUser,
   };
 
-  // =======================================================
-  // PROVIDER
-  // =======================================================
+  /*
+  |--------------------------------------------------------------------------
+  | Provider
+  |--------------------------------------------------------------------------
+  */
 
   return (
     <AuthContext.Provider value={value}>
