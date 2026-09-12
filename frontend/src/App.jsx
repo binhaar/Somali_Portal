@@ -1,13 +1,24 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import ComingSoon from "./pages/ComingSoon";
+// =========================================================
+// PUBLIC PAGES
+// =========================================================
 
+import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Contact from "./pages/Contact";
 
+// =========================================================
+// ADMIN COMPONENTS
+// =========================================================
+
 import AdminRoute from "./components/AdminRoute";
 import AdminLayout from "./layouts/AdminLayout";
+
+// =========================================================
+// ADMIN PAGES
+// =========================================================
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Users from "./pages/admin/Users";
@@ -22,43 +33,54 @@ import Events from "./pages/admin/Events";
 import EmergencyContacts from "./pages/admin/EmergencyContacts";
 import Settings from "./pages/admin/Settings";
 
+// =========================================================
+// APP
+// =========================================================
+
 function App() {
   return (
     <Routes>
-      {/* =========================
-          PUBLIC PAGES
-      ========================= */}
 
-      {/* Temporary Coming Soon Page */}
+      {/* =====================================================
+          PUBLIC ROUTES
+      ===================================================== */}
+
+      {/* HOME */}
       <Route
         path="/"
-        element={<ComingSoon />}
+        element={<Home />}
       />
 
+      {/* LOGIN */}
       <Route
         path="/login"
         element={<Login />}
       />
 
+      {/* REGISTER */}
       <Route
         path="/register"
         element={<Register />}
       />
 
+      {/* CONTACT */}
       <Route
         path="/contact"
         element={<Contact />}
       />
 
-      {/* =========================
-          ADMIN PAGES
-      ========================= */}
+
+      {/* =====================================================
+          ADMIN ROUTES
+      ===================================================== */}
 
       <Route
         path="/admin"
         element={<AdminRoute />}
       >
-        <Route element={<AdminLayout />}>
+        <Route
+          element={<AdminLayout />}
+        >
 
           {/* /admin → /admin/dashboard */}
           <Route
@@ -71,73 +93,109 @@ function App() {
             }
           />
 
-          {/* Dashboard */}
+          {/* =================================================
+              DASHBOARD
+          ================================================= */}
+
           <Route
             path="dashboard"
             element={<AdminDashboard />}
           />
 
-          {/* Users */}
+          {/* =================================================
+              USERS
+          ================================================= */}
+
           <Route
             path="users"
             element={<Users />}
           />
 
-          {/* Services */}
+          {/* =================================================
+              SERVICES
+          ================================================= */}
+
           <Route
             path="services"
             element={<Services />}
           />
 
-          {/* Categories */}
+          {/* =================================================
+              CATEGORIES
+          ================================================= */}
+
           <Route
             path="categories"
             element={<Categories />}
           />
 
-          {/* Ministries */}
+          {/* =================================================
+              MINISTRIES
+          ================================================= */}
+
           <Route
             path="ministries"
             element={<Ministries />}
           />
 
-          {/* Agencies */}
+          {/* =================================================
+              AGENCIES
+          ================================================= */}
+
           <Route
             path="agencies"
             element={<Agencies />}
           />
 
-          {/* Provinces */}
+          {/* =================================================
+              PROVINCES
+          ================================================= */}
+
           <Route
             path="provinces"
             element={<Provinces />}
           />
 
-          {/* Cabinet */}
+          {/* =================================================
+              CABINET
+          ================================================= */}
+
           <Route
             path="cabinet"
             element={<Cabinet />}
           />
 
-          {/* News */}
+          {/* =================================================
+              NEWS
+          ================================================= */}
+
           <Route
             path="news"
             element={<News />}
           />
 
-          {/* Events */}
+          {/* =================================================
+              EVENTS
+          ================================================= */}
+
           <Route
             path="events"
             element={<Events />}
           />
 
-          {/* Emergency Contacts */}
+          {/* =================================================
+              EMERGENCY CONTACTS
+          ================================================= */}
+
           <Route
             path="emergency-contacts"
             element={<EmergencyContacts />}
           />
 
-          {/* Settings */}
+          {/* =================================================
+              SETTINGS
+          ================================================= */}
+
           <Route
             path="settings"
             element={<Settings />}
@@ -146,10 +204,12 @@ function App() {
         </Route>
       </Route>
 
-      {/* =========================
-          404
-      ========================= */}
 
+      {/* =====================================================
+          404
+      ===================================================== */}
+
+      {/* Any unknown URL → Home */}
       <Route
         path="*"
         element={
@@ -159,6 +219,7 @@ function App() {
           />
         }
       />
+
     </Routes>
   );
 }
