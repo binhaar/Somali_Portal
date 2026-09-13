@@ -12,17 +12,18 @@ import {
   Landmark,
   Car,
   Plane,
+   Home as HomeIcon,
   Building2,
   Users,
   ShieldCheck,
   Baby,
-  Home as HomeIcon,
   Loader2,
   AlertCircle,
   ExternalLink,
 } from "lucide-react";
 
 import api from "../services/api";
+import Navbar from "../components/Navbar";
 
 // =========================================================
 // ICON MAP
@@ -364,20 +365,14 @@ const Services = () => {
     return (
       <div className="min-h-screen bg-gray-50">
 
+        {/* NAVBAR */}
+        <Navbar />
+
         {/* HEADER */}
 
         <section className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900">
 
           <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-
-            <button
-              type="button"
-              onClick={() => navigate("/")}
-              className="mb-7 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
-            >
-              <HomeIcon size={18} />
-              Back to Home
-            </button>
 
             <h1 className="text-4xl font-bold text-white sm:text-5xl">
               Government Services
@@ -424,18 +419,12 @@ const Services = () => {
     return (
       <div className="min-h-screen bg-gray-50">
 
+        {/* NAVBAR */}
+        <Navbar />
+
         <section className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900">
 
           <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-
-            <button
-              type="button"
-              onClick={() => navigate("/")}
-              className="mb-7 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
-            >
-              <HomeIcon size={18} />
-              Back to Home
-            </button>
 
             <h1 className="text-4xl font-bold text-white sm:text-5xl">
               Government Services
@@ -472,15 +461,6 @@ const Services = () => {
                 Try Again
               </button>
 
-              <button
-                type="button"
-                onClick={() => navigate("/")}
-                className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-3 font-semibold text-gray-700 transition hover:bg-gray-50"
-              >
-                <HomeIcon size={18} />
-                Home
-              </button>
-
             </div>
 
           </div>
@@ -498,6 +478,9 @@ const Services = () => {
   return (
     <div className="min-h-screen bg-gray-50">
 
+      {/* NAVBAR */}
+      <Navbar />
+
       {/* =====================================================
           HERO
       ===================================================== */}
@@ -505,17 +488,6 @@ const Services = () => {
       <section className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900">
 
         <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-
-          {/* BACK HOME */}
-
-          <button
-            type="button"
-            onClick={() => navigate("/")}
-            className="mb-8 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
-          >
-            <HomeIcon size={18} />
-            Back to Home
-          </button>
 
           <div className="max-w-3xl">
 
@@ -574,15 +546,6 @@ const Services = () => {
           </div>
 
           {/* HOME */}
-
-          <button
-            type="button"
-            onClick={() => navigate("/")}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-          >
-            <HomeIcon size={18} />
-            Home
-          </button>
 
         </div>
 
