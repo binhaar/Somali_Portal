@@ -9,6 +9,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Contact from "./pages/Contact";
 import PublicServices from "./pages/Services";
+import History from "./pages/History";
 
 // =========================================================
 // ADMIN COMPONENTS
@@ -33,6 +34,7 @@ import News from "./pages/admin/News";
 import Events from "./pages/admin/Events";
 import EmergencyContacts from "./pages/admin/EmergencyContacts";
 import Settings from "./pages/admin/Settings";
+import HistoryAdmin from "./pages/admin/History";
 
 // =========================================================
 // APP
@@ -41,7 +43,6 @@ import Settings from "./pages/admin/Settings";
 function App() {
   return (
     <Routes>
-
       {/* =====================================================
           PUBLIC ROUTES
       ===================================================== */}
@@ -76,6 +77,11 @@ function App() {
         element={<PublicServices />}
       />
 
+      {/* PUBLIC HISTORY */}
+      <Route
+        path="/history"
+        element={<History />}
+      />
 
       {/* =====================================================
           ADMIN ROUTES
@@ -86,7 +92,6 @@ function App() {
         element={<AdminRoute />}
       >
         <Route element={<AdminLayout />}>
-
           {/* /admin → /admin/dashboard */}
           <Route
             index
@@ -164,15 +169,19 @@ function App() {
             element={<EmergencyContacts />}
           />
 
+          {/* HISTORY */}
+          <Route
+            path="history"
+            element={<HistoryAdmin />}
+          />
+
           {/* SETTINGS */}
           <Route
             path="settings"
             element={<Settings />}
           />
-
         </Route>
       </Route>
-
 
       {/* =====================================================
           404
@@ -187,7 +196,6 @@ function App() {
           />
         }
       />
-
     </Routes>
   );
 }

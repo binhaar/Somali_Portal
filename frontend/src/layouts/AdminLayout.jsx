@@ -21,6 +21,7 @@ import {
   ChevronDown,
   Globe,
   UserCircle,
+  Clock,
 } from "lucide-react";
 
 import {
@@ -102,11 +103,16 @@ function AdminLayout() {
       path: "/admin/emergency-contacts",
       icon: PhoneCall,
     },
-    {
+      {
+    label: "History",
+    path: "/admin/history",
+    icon: Clock,
+    },
+     {
       label: "Settings",
       path: "/admin/settings",
       icon: Settings,
-    },
+     },
   ];
 
   // ==========================================

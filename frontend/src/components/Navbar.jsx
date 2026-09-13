@@ -9,10 +9,7 @@ import {
   X,
   LayoutDashboard,
   Landmark,
-  BriefcaseBusiness,
   FileText,
-  Building2,
-  MapPinned,
   MessageSquare,
 } from "lucide-react";
 
@@ -51,12 +48,8 @@ export default function Navbar({
 
       constitution: "Constitution",
       vision: "National Vision 2060",
-      memberStates: "Member States",
-
+      history: "History",
       executive: "Executive Leadership",
-      ministries: "Federal Ministries",
-      agencies: "National Agencies",
-
       login: "Login",
       register: "Register",
       dashboard: "Dashboard",
@@ -73,12 +66,8 @@ export default function Navbar({
 
       constitution: "Dastuurka",
       vision: "Himilada Qaranka 2060",
-      memberStates: "Dowlad Goboleedyada",
-
+      history: "Taariikhda",
       executive: "Hoggaanka Dowladda",
-      ministries: "Wasaaradaha Federaalka",
-      agencies: "Hay'adaha Qaranka",
-
       login: "Gal",
       register: "Isdiiwaangeli",
       dashboard: "Dashboard",
@@ -191,9 +180,9 @@ export default function Navbar({
     },
 
     {
-      label: l.memberStates,
-      icon: MapPinned,
-      action: () => handleScroll("agencies"),
+      label: l.history,
+      icon: FileText,
+      action: () => navigate("/history"),
     },
   ];
 
@@ -206,18 +195,6 @@ export default function Navbar({
       label: l.executive,
       icon: Landmark,
       action: () => handleScroll("leadership"),
-    },
-
-    {
-      label: l.ministries,
-      icon: Building2,
-      action: () => handleScroll("ministries"),
-    },
-
-    {
-      label: l.agencies,
-      icon: BriefcaseBusiness,
-      action: () => handleScroll("agencies"),
     },
   ];
 
