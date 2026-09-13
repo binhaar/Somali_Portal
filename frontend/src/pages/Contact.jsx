@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import api from "../services/api";
+import Navbar from "../components/Navbar";
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -85,7 +86,9 @@ export default function Contact() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <>
+      <Navbar />
+      <main className="min-h-screen bg-slate-50">
 
       {/* HERO */}
       <section className="bg-[#0B3D91]">
@@ -616,6 +619,7 @@ export default function Contact() {
         </div>
       </section>
 
-    </main>
+      </main>
+    </>
   );
 }

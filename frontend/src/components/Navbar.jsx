@@ -446,9 +446,10 @@ export default function Navbar({
 
             <button
               type="button"
-              onClick={() =>
-                handleScroll("services")
-              }
+              onClick={() => {
+                closeMenus();
+                navigate("/services");
+              }}
               className="
                 rounded-xl
                 px-4
@@ -1068,9 +1069,10 @@ export default function Navbar({
 
               <button
                 type="button"
-                onClick={() =>
-                  handleScroll("services")
-                }
+                onClick={() => {
+                  closeMenus();
+                  navigate("/services");
+                }}
                 className="
                   flex
                   w-full
