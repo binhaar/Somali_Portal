@@ -11,6 +11,11 @@ import {
   Landmark,
   FileText,
   MessageSquare,
+  Map,
+  Users,
+  Utensils,
+  Building2,
+  Building,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -46,10 +51,19 @@ export default function Navbar({
       services: "Services",
       contact: "Contact",
 
+      history: "History",
+      tourism: "Tourism",
+      culturePeople: "Culture & People",
+      foodCuisine: "Food & Cuisine",
+
       constitution: "Constitution",
       vision: "National Vision 2060",
-      history: "History",
-      executive: "Executive Leadership",
+      executive: "The Executive",
+      cabinet: "The Cabinet",
+      parliament: "The Parliament",
+      ministries: "Ministries",
+      agencies: "National Agencies",
+      memberStates: "Member States",
       login: "Login",
       register: "Register",
       dashboard: "Dashboard",
@@ -64,10 +78,19 @@ export default function Navbar({
       services: "Adeegyada",
       contact: "Xiriir",
 
+      history: "Taariikhda",
+      tourism: "Dalxiiska",
+      culturePeople: "Dhaqanka & Dadka",
+      foodCuisine: "Cuntada & Cunto-karinta",
+
       constitution: "Dastuurka",
       vision: "Himilada Qaranka 2060",
-      history: "Taariikhda",
       executive: "Hoggaanka Dowladda",
+      cabinet: "Golaha Wasiirrada",
+      parliament: "Baarlamaanka",
+      ministries: "Wasaaradaha",
+      agencies: "Hay'adaha Qaranka",
+      memberStates: "Dowlad Goboleedyada",
       login: "Gal",
       register: "Isdiiwaangeli",
       dashboard: "Dashboard",
@@ -168,21 +191,39 @@ export default function Navbar({
 
   const nationItems = [
     {
-      label: l.constitution,
-      icon: FileText,
-      action: () => handleScroll("about"),
-    },
-
-    {
-      label: l.vision,
-      icon: Landmark,
-      action: () => handleScroll("about"),
-    },
-
-    {
       label: l.history,
       icon: FileText,
-      action: () => navigate("/history"),
+      action: () => {
+        closeMenus();
+        navigate("/history");
+      },
+    },
+
+    {
+      label: l.tourism,
+      icon: Map,
+      action: () => {
+        closeMenus();
+        navigate("/tourism");
+      },
+    },
+
+    {
+      label: l.culturePeople,
+      icon: Users,
+      action: () => {
+        closeMenus();
+        navigate("/culture-people");
+      },
+    },
+
+    {
+      label: l.foodCuisine,
+      icon: Utensils,
+      action: () => {
+        closeMenus();
+        navigate("/food-cuisine");
+      },
     },
   ];
 
@@ -192,9 +233,72 @@ export default function Navbar({
 
   const governmentItems = [
     {
+      label: l.constitution,
+      icon: FileText,
+      action: () => {
+        closeMenus();
+        navigate("/government/constitution");
+      },
+    },
+
+    {
+      label: l.vision,
+      icon: Landmark,
+      action: () => {
+        closeMenus();
+        navigate("/government/vision");
+      },
+    },
+
+    {
       label: l.executive,
       icon: Landmark,
       action: () => handleScroll("leadership"),
+    },
+
+    {
+      label: l.cabinet,
+      icon: Users,
+      action: () => {
+        closeMenus();
+        navigate("/cabinet");
+      },
+    },
+
+    {
+      label: l.parliament,
+      icon: Building2,
+      action: () => {
+        closeMenus();
+        navigate("/parliament");
+      },
+    },
+
+    {
+      label: l.ministries,
+      icon: Building,
+      action: () => {
+        closeMenus();
+        navigate("/ministries");
+      },
+    },
+
+    {
+      label: l.agencies,
+      icon: Landmark,
+      action: () => {
+        closeMenus();
+        navigate("/agencies");
+      },
+    },
+
+    {
+      label: l.memberStates,
+      icon: Map,
+      action: () => {
+        closeMenus();
+        navigate("/member-states");
+      },
     },
   ];
 
