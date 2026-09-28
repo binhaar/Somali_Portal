@@ -1,20 +1,26 @@
 const mongoose = require("mongoose");
 
-const tourismItemSchema = new mongoose.Schema(
+const destinationSchema = new mongoose.Schema(
   {
-    title: {
+    nameEnglish: {
       type: String,
       trim: true,
       default: "",
     },
 
-    description: {
+    nameSomali: {
       type: String,
       trim: true,
       default: "",
     },
 
-    image: {
+    descriptionEnglish: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    descriptionSomali: {
       type: String,
       trim: true,
       default: "",
@@ -27,6 +33,12 @@ const tourismItemSchema = new mongoose.Schema(
     },
 
     category: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    image: {
       type: String,
       trim: true,
       default: "",
@@ -48,20 +60,30 @@ const tourismItemSchema = new mongoose.Schema(
       default: "active",
     },
   },
-  {
-    _id: true,
-  }
+  { _id: true }
 );
 
-const tourismGallerySchema = new mongoose.Schema(
+const highlightSchema = new mongoose.Schema(
   {
-    title: {
+    titleEnglish: {
       type: String,
       trim: true,
       default: "",
     },
 
-    description: {
+    titleSomali: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    descriptionEnglish: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    descriptionSomali: {
       type: String,
       trim: true,
       default: "",
@@ -84,33 +106,81 @@ const tourismGallerySchema = new mongoose.Schema(
       default: "active",
     },
   },
+  { _id: true }
+);
+
+const gallerySchema = new mongoose.Schema(
   {
-    _id: true,
-  }
+    titleEnglish: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    titleSomali: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    descriptionEnglish: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    descriptionSomali: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    image: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    order: {
+      type: Number,
+      default: 0,
+    },
+
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
+    },
+  },
+  { _id: true }
 );
 
 const tourismSchema = new mongoose.Schema(
   {
-    title: {
+    titleEnglish: {
       type: String,
       required: true,
       trim: true,
       default: "Tourism",
     },
 
-    slug: {
+    titleSomali: {
       type: String,
       required: true,
-      unique: true,
-      lowercase: true,
       trim: true,
-      default: "tourism",
+      default: "Dalxiiska",
     },
 
-    subtitle: {
+    subtitleEnglish: {
       type: String,
       trim: true,
-      default: "Discover the beauty of Somalia",
+      default: "",
+    },
+
+    subtitleSomali: {
+      type: String,
+      trim: true,
+      default: "",
     },
 
     heroImage: {
@@ -119,73 +189,135 @@ const tourismSchema = new mongoose.Schema(
       default: "",
     },
 
-    heroTitle: {
+    heroTitleEnglish: {
       type: String,
       trim: true,
       default: "",
     },
 
-    heroDescription: {
+    heroTitleSomali: {
       type: String,
       trim: true,
       default: "",
     },
 
-    introductionTitle: {
-      type: String,
-      trim: true,
-      default: "Discover Somalia",
-    },
-
-    introduction: {
+    heroDescriptionEnglish: {
       type: String,
       trim: true,
       default: "",
     },
 
-    destinationsHeading: {
+    heroDescriptionSomali: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    introductionTitleEnglish: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    introductionTitleSomali: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    introductionEnglish: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    introductionSomali: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    destinationsHeadingEnglish: {
       type: String,
       trim: true,
       default: "Popular Destinations",
     },
 
+    destinationsHeadingSomali: {
+      type: String,
+      trim: true,
+      default: "Goobaha Dalxiiska",
+    },
+
     destinations: {
-      type: [tourismItemSchema],
+      type: [destinationSchema],
       default: [],
     },
 
-    highlightsHeading: {
+    highlightsHeadingEnglish: {
       type: String,
       trim: true,
       default: "Tourism Highlights",
     },
 
+    highlightsHeadingSomali: {
+      type: String,
+      trim: true,
+      default: "Waxyaabaha Muhiimka ah ee Dalxiiska",
+    },
+
     highlights: {
-      type: [tourismItemSchema],
+      type: [highlightSchema],
       default: [],
     },
 
-    galleryHeading: {
+    galleryHeadingEnglish: {
       type: String,
       trim: true,
       default: "Gallery",
     },
 
+    galleryHeadingSomali: {
+      type: String,
+      trim: true,
+      default: "Sawirrada Dalxiiska",
+    },
+
     gallery: {
-      type: [tourismGallerySchema],
+      type: [gallerySchema],
       default: [],
     },
 
-    ctaTitle: {
+    ctaTitleEnglish: {
       type: String,
       trim: true,
       default: "",
     },
 
-    ctaText: {
+    ctaTitleSomali: {
       type: String,
       trim: true,
       default: "",
+    },
+
+    ctaTextEnglish: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    ctaTextSomali: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    slug: {
+      type: String,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      default: "tourism",
     },
 
     status: {
@@ -199,4 +331,7 @@ const tourismSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Tourism", tourismSchema);
+module.exports = mongoose.model(
+  "Tourism",
+  tourismSchema
+);
