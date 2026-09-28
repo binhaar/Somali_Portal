@@ -4,32 +4,32 @@ const tourismItemSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
       trim: true,
+      default: "",
     },
 
     description: {
       type: String,
-      default: "",
       trim: true,
+      default: "",
     },
 
     image: {
       type: String,
-      default: "",
       trim: true,
+      default: "",
     },
 
     location: {
       type: String,
-      default: "",
       trim: true,
+      default: "",
     },
 
     category: {
       type: String,
-      default: "",
       trim: true,
+      default: "",
     },
 
     featured: {
@@ -48,27 +48,29 @@ const tourismItemSchema = new mongoose.Schema(
       default: "active",
     },
   },
-  { _id: true }
+  {
+    _id: true,
+  }
 );
 
 const tourismGallerySchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      default: "",
       trim: true,
+      default: "",
     },
 
     description: {
       type: String,
-      default: "",
       trim: true,
+      default: "",
     },
 
     image: {
       type: String,
-      required: true,
       trim: true,
+      default: "",
     },
 
     order: {
@@ -82,7 +84,9 @@ const tourismGallerySchema = new mongoose.Schema(
       default: "active",
     },
   },
-  { _id: true }
+  {
+    _id: true,
+  }
 );
 
 const tourismSchema = new mongoose.Schema(
@@ -105,45 +109,44 @@ const tourismSchema = new mongoose.Schema(
 
     subtitle: {
       type: String,
-      default: "Discover the beauty of Somalia",
       trim: true,
+      default: "Discover the beauty of Somalia",
     },
 
     heroImage: {
       type: String,
-      default: "",
       trim: true,
+      default: "",
     },
 
     heroTitle: {
       type: String,
-      default: "Discover Somalia",
       trim: true,
+      default: "",
     },
 
     heroDescription: {
       type: String,
-      default:
-        "Explore Somalia's coastline, heritage, landscapes and vibrant culture.",
       trim: true,
+      default: "",
     },
 
     introductionTitle: {
       type: String,
-      default: "Tourism in Somalia",
       trim: true,
+      default: "Discover Somalia",
     },
 
     introduction: {
       type: String,
-      default: "",
       trim: true,
+      default: "",
     },
 
     destinationsHeading: {
       type: String,
-      default: "Explore Destinations",
       trim: true,
+      default: "Popular Destinations",
     },
 
     destinations: {
@@ -153,8 +156,8 @@ const tourismSchema = new mongoose.Schema(
 
     highlightsHeading: {
       type: String,
-      default: "Experience Somalia",
       trim: true,
+      default: "Tourism Highlights",
     },
 
     highlights: {
@@ -164,8 +167,8 @@ const tourismSchema = new mongoose.Schema(
 
     galleryHeading: {
       type: String,
-      default: "Discover Somalia",
       trim: true,
+      default: "Gallery",
     },
 
     gallery: {
@@ -175,15 +178,14 @@ const tourismSchema = new mongoose.Schema(
 
     ctaTitle: {
       type: String,
-      default: "Discover the Beauty of Somalia",
       trim: true,
+      default: "",
     },
 
     ctaText: {
       type: String,
-      default:
-        "Explore the places, people and experiences that make Somalia unique.",
       trim: true,
+      default: "",
     },
 
     status: {
@@ -192,7 +194,6 @@ const tourismSchema = new mongoose.Schema(
       default: "active",
     },
   },
-
   {
     timestamps: true,
   }

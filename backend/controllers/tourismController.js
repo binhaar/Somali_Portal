@@ -1,57 +1,10 @@
 const Tourism = require("../models/Tourism");
 
-const cleanItems = (items) => {
-  if (!Array.isArray(items)) return [];
-
-  return items
-    .map((item, index) => ({
-      title: (item.title || "").trim(),
-      description: (item.description || "").trim(),
-      image: (item.image || "").trim(),
-      location: (item.location || "").trim(),
-      category: (item.category || "").trim(),
-      featured: Boolean(item.featured),
-      order: index,
-      status: item.status || "active",
-    }))
-    .filter((item) => item.title);
-};
-
-const cleanGallery = (items) => {
-  if (!Array.isArray(items)) return [];
-
-  return items
-    .map((item, index) => ({
-      title: (item.title || "").trim(),
-      description: (item.description || "").trim(),
-      image: (item.image || "").trim(),
-      order: index,
-      status: item.status || "active",
-    }))
-    .filter((item) => item.image);
-};
-
-const shapePublic = (tourism) => {
-  if (!tourism) return null;
-
-  tourism.destinations = (tourism.destinations || [])
-    .filter((item) => item.status === "active")
-    .sort((a, b) => a.order - b.order);
-
-  tourism.highlights = (tourism.highlights || [])
-    .filter((item) => item.status === "active")
-    .sort((a, b) => a.order - b.order);
-
-  tourism.gallery = (tourism.gallery || [])
-    .filter((item) => item.status === "active")
-    .sort((a, b) => a.order - b.order);
-
-  return tourism;
-};
-
 // PUBLIC
 const getTourism = async (req, res) => {
   try {
+    console.log("GET /api/tourism CALLED");
+
     const tourism = await Tourism.findOne({
       slug: "tourism",
       status: "active",
@@ -60,54 +13,7 @@ const getTourism = async (req, res) => {
     if (!tourism) {
       return res.status(404).json({
         success: false,
-        message: "Tourism page not found.",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      data: shapePublic(tourism),
-    });
-  } catch (error) {
-    console.error("Get Tourism Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to load Tourism page.",
-    });
-  }
-};
-
-// ADMIN - GET ALL
-const getAllTourism = async (req, res) => {
-  try {
-    const records = await Tourism.find().sort({
-      updatedAt: -1,
-    });
-
-    return res.status(200).json({
-      success: true,
-      data: records,
-    });
-  } catch (error) {
-    console.error("Get All Tourism Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to load Tourism records.",
-    });
-  }
-};
-
-// ADMIN - GET ONE
-const getTourismById = async (req, res) => {
-  try {
-    const tourism = await Tourism.findById(req.params.id);
-
-    if (!tourism) {
-      return res.status(404).json({
-        success: false,
-        message: "Tourism record not found.",
+        message: "Tourism information not found",
       });
     }
 
@@ -116,57 +22,68 @@ const getTourismById = async (req, res) => {
       data: tourism,
     });
   } catch (error) {
-    console.error("Get Tourism By ID Error:", error);
+    console.error("GET TOURISM ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to load Tourism record.",
+      message: "Failed to load tourism information",
+      error: error.message,
     });
   }
 };
 
-const buildPayload = (body) => ({
-  title: (body.title || "Tourism").trim(),
+// ADMIN - GET ALL
+const getAllTourism = async (req, res) => {
+  try {
+    const tourism = await Tourism.find()
+      .sort({ updatedAt: -1 })
+      .lean();
 
-  slug: "tourism",
+    return res.status(200).json({
+      success: true,
+      data: tourism,
+    });
+  } catch (error) {
+    console.error("GET ALL TOURISM ERROR:", error);
 
-  subtitle: (body.subtitle || "").trim(),
+    return res.status(500).json({
+      success: false,
+      message: "Failed to load tourism information",
+      error: error.message,
+    });
+  }
+};
 
-  heroImage: (body.heroImage || "").trim(),
+// ADMIN - GET ONE
+const getTourismById = async (req, res) => {
+  try {
+    const tourism = await Tourism.findById(
+      req.params.id
+    ).lean();
 
-  heroTitle: (body.heroTitle || "Discover Somalia").trim(),
+    if (!tourism) {
+      return res.status(404).json({
+        success: false,
+        message: "Tourism information not found",
+      });
+    }
 
-  heroDescription: (body.heroDescription || "").trim(),
+    return res.status(200).json({
+      success: true,
+      data: tourism,
+    });
+  } catch (error) {
+    console.error("GET TOURISM BY ID ERROR:", error);
 
-  introductionTitle:
-    (body.introductionTitle || "Tourism in Somalia").trim(),
+    return res.status(500).json({
+      success: false,
+      message: "Failed to load tourism information",
+      error: error.message,
+    });
+  }
+};
 
-  introduction: (body.introduction || "").trim(),
-
-  destinationsHeading:
-    (body.destinationsHeading || "Explore Destinations").trim(),
-
-  destinations: cleanItems(body.destinations),
-
-  highlightsHeading:
-    (body.highlightsHeading || "Experience Somalia").trim(),
-
-  highlights: cleanItems(body.highlights),
-
-  galleryHeading:
-    (body.galleryHeading || "Discover Somalia").trim(),
-
-  gallery: cleanGallery(body.gallery),
-
-  ctaTitle:
-    (body.ctaTitle || "Discover the Beauty of Somalia").trim(),
-
-  ctaText: (body.ctaText || "").trim(),
-
-  status: body.status || "active",
-});
-
-// ADMIN - CREATE
+// CREATE
 const createTourism = async (req, res) => {
   try {
     const existing = await Tourism.findOne({
@@ -176,89 +93,94 @@ const createTourism = async (req, res) => {
     if (existing) {
       return res.status(409).json({
         success: false,
-        message:
-          "Tourism page already exists. Please edit the existing page.",
+        message: "Tourism information already exists",
       });
     }
 
-    const tourism = await Tourism.create(
-      buildPayload(req.body)
-    );
+    const tourism = await Tourism.create({
+      ...req.body,
+      slug: "tourism",
+    });
 
     return res.status(201).json({
       success: true,
-      message: "Tourism page created successfully.",
+      message: "Tourism created successfully",
       data: tourism,
     });
   } catch (error) {
-    console.error("Create Tourism Error:", error);
+    console.error("CREATE TOURISM ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to create Tourism page.",
+      message: "Failed to create tourism",
+      error: error.message,
     });
   }
 };
 
-// ADMIN - UPDATE
+// UPDATE
 const updateTourism = async (req, res) => {
   try {
-    const tourism = await Tourism.findById(req.params.id);
+    const tourism = await Tourism.findById(
+      req.params.id
+    );
 
     if (!tourism) {
       return res.status(404).json({
         success: false,
-        message: "Tourism record not found.",
+        message: "Tourism information not found",
       });
     }
 
-    Object.assign(
-      tourism,
-      buildPayload(req.body)
-    );
-
-    tourism.slug = "tourism";
+    Object.assign(tourism, {
+      ...req.body,
+      slug: "tourism",
+    });
 
     await tourism.save();
 
     return res.status(200).json({
       success: true,
-      message: "Tourism page updated successfully.",
+      message: "Tourism updated successfully",
       data: tourism,
     });
   } catch (error) {
-    console.error("Update Tourism Error:", error);
+    console.error("UPDATE TOURISM ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to update Tourism page.",
+      message: "Failed to update tourism",
+      error: error.message,
     });
   }
 };
 
-// ADMIN - DELETE
+// DELETE
 const deleteTourism = async (req, res) => {
   try {
     const tourism =
-      await Tourism.findByIdAndDelete(req.params.id);
+      await Tourism.findByIdAndDelete(
+        req.params.id
+      );
 
     if (!tourism) {
       return res.status(404).json({
         success: false,
-        message: "Tourism record not found.",
+        message: "Tourism information not found",
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "Tourism page deleted successfully.",
+      message: "Tourism deleted successfully",
     });
   } catch (error) {
-    console.error("Delete Tourism Error:", error);
+    console.error("DELETE TOURISM ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to delete Tourism page.",
+      message: "Failed to delete tourism",
+      error: error.message,
     });
   }
 };
