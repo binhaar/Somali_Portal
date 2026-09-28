@@ -21,6 +21,7 @@ import {
   ChevronDown,
   Globe,
   UserCircle,
+  Compass,
   Clock,
 } from "lucide-react";
 
@@ -108,6 +109,11 @@ function AdminLayout() {
     path: "/admin/history",
     icon: Clock,
     },
+    { 
+      label: "Tourism",
+       path: "/admin/tourism",
+       icon: Compass, 
+      },
      {
       label: "Settings",
       path: "/admin/settings",

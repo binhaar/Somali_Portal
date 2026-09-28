@@ -1,9 +1,8 @@
 const History = require("../models/History");
 
-// =========================================================
-// GET PUBLIC HISTORY
-// GET /api/history
-// =========================================================
+// ==========================================
+// PUBLIC - GET ACTIVE HISTORY
+// ==========================================
 
 const getHistory = async (req, res) => {
   try {
@@ -19,24 +18,17 @@ const getHistory = async (req, res) => {
       });
     }
 
-    // Sort historical content
     history.content = (history.content || [])
       .filter((item) => item.status === "active")
-      .sort((a, b) => a.order - b.order);
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
 
-    // Sort responsibilities
-    history.responsibilities = (
-      history.responsibilities || []
-    )
+    history.responsibilities = (history.responsibilities || [])
       .filter((item) => item.status === "active")
-      .sort((a, b) => a.order - b.order);
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
 
-    // Sort closing content
-    history.closingContent = (
-      history.closingContent || []
-    )
+    history.closingContent = (history.closingContent || [])
       .filter((item) => item.status === "active")
-      .sort((a, b) => a.order - b.order);
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
 
     return res.status(200).json({
       success: true,
@@ -47,48 +39,44 @@ const getHistory = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to load History page.",
+      message: "Server error while loading History.",
+      error: error.message,
     });
   }
 };
 
-
-// =========================================================
-// GET ALL HISTORY
-// GET /api/history/admin/all
-// =========================================================
+// ==========================================
+// ADMIN - GET ALL HISTORY
+// ==========================================
 
 const getAllHistory = async (req, res) => {
   try {
-    const histories = await History.find()
-      .sort({ updatedAt: -1 })
+    const history = await History.find()
+      .sort({ createdAt: -1 })
       .lean();
 
     return res.status(200).json({
       success: true,
-      data: histories,
+      data: history,
     });
   } catch (error) {
     console.error("Get All History Error:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to load History records.",
+      message: "Server error while loading History data.",
+      error: error.message,
     });
   }
 };
 
-
-// =========================================================
-// GET HISTORY BY ID
-// GET /api/history/admin/:id
-// =========================================================
+// ==========================================
+// ADMIN - GET HISTORY BY ID
+// ==========================================
 
 const getHistoryById = async (req, res) => {
   try {
-    const history = await History.findById(
-      req.params.id
-    );
+    const history = await History.findById(req.params.id);
 
     if (!history) {
       return res.status(404).json({
@@ -102,276 +90,180 @@ const getHistoryById = async (req, res) => {
       data: history,
     });
   } catch (error) {
-    console.error(
-      "Get History By ID Error:",
-      error
-    );
+    console.error("Get History By ID Error:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to load History record.",
+      message: "Server error while loading History record.",
+      error: error.message,
     });
   }
 };
 
-
-// =========================================================
-// CREATE HISTORY
-// POST /api/history/admin
-// =========================================================
+// ==========================================
+// ADMIN - CREATE HISTORY
+// ==========================================
 
 const createHistory = async (req, res) => {
   try {
-    const {
-      title,
-      heading,
-      content,
-      responsibilitiesHeading,
-      responsibilities,
-      closingContent,
-      status,
-    } = req.body;
-
-    // Validate required fields
-    if (!title || !heading) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Title and heading are required.",
-      });
-    }
-
-    // Only ONE History page
-    const existingHistory =
-      await History.findOne({
-        slug: "history",
-      });
+    const existingHistory = await History.findOne({
+      slug: "history",
+    });
 
     if (existingHistory) {
       return res.status(409).json({
         success: false,
         message:
-          "History page already exists. Please edit the existing page.",
+          "History page already exists. Please update the existing page.",
       });
     }
 
     const history = await History.create({
-      title: title.trim(),
+      title: req.body.title || "History",
 
       slug: "history",
 
-      heading: heading.trim(),
+      heading:
+        req.body.heading || "Historical Background",
 
-      content: Array.isArray(content)
-        ? content.map((item, index) => ({
-            text: item.text,
-            order: index,
-            status:
-              item.status || "active",
-          }))
+      content: Array.isArray(req.body.content)
+        ? req.body.content
         : [],
 
       responsibilitiesHeading:
-        responsibilitiesHeading ||
+        req.body.responsibilitiesHeading ||
         "Responsibilities",
 
       responsibilities:
-        Array.isArray(responsibilities)
-          ? responsibilities.map(
-              (item, index) => ({
-                text: item.text,
-                order: index,
-                status:
-                  item.status || "active",
-              })
-            )
+        Array.isArray(req.body.responsibilities)
+          ? req.body.responsibilities
           : [],
 
       closingContent:
-        Array.isArray(closingContent)
-          ? closingContent.map(
-              (item, index) => ({
-                text: item.text,
-                order: index,
-                status:
-                  item.status || "active",
-              })
-            )
+        Array.isArray(req.body.closingContent)
+          ? req.body.closingContent
           : [],
 
-      status: status || "active",
+      status: req.body.status || "active",
     });
 
     return res.status(201).json({
       success: true,
-      message:
-        "History page created successfully.",
+      message: "History page created successfully.",
       data: history,
     });
   } catch (error) {
-    console.error(
-      "Create History Error:",
-      error
-    );
+    console.error("Create History Error:", error);
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to create History page.",
+      message: "Server error while creating History page.",
+      error: error.message,
     });
   }
 };
 
-
-// =========================================================
-// UPDATE HISTORY
-// PUT /api/history/admin/:id
-// =========================================================
+// ==========================================
+// ADMIN - UPDATE HISTORY
+// ==========================================
 
 const updateHistory = async (req, res) => {
   try {
-    const {
-      title,
-      heading,
-      content,
-      responsibilitiesHeading,
-      responsibilities,
-      closingContent,
-      status,
-    } = req.body;
-
-    const history =
-      await History.findById(
-        req.params.id
-      );
+    const history = await History.findById(req.params.id);
 
     if (!history) {
       return res.status(404).json({
         success: false,
-        message:
-          "History record not found.",
+        message: "History record not found.",
       });
     }
 
-    history.title =
-      title?.trim() || history.title;
+    if (req.body.title !== undefined) {
+      history.title = req.body.title;
+    }
 
-    // URL is permanently fixed
     history.slug = "history";
 
-    history.heading =
-      heading?.trim() ||
-      history.heading;
+    if (req.body.heading !== undefined) {
+      history.heading = req.body.heading;
+    }
 
-    history.content =
-      Array.isArray(content)
-        ? content.map(
-            (item, index) => ({
-              text: item.text,
-              order: index,
-              status:
-                item.status || "active",
-            })
-          )
-        : [];
+    if (Array.isArray(req.body.content)) {
+      history.content = req.body.content;
+    }
 
-    history.responsibilitiesHeading =
-      responsibilitiesHeading ||
-      "Responsibilities";
+    if (req.body.responsibilitiesHeading !== undefined) {
+      history.responsibilitiesHeading =
+        req.body.responsibilitiesHeading;
+    }
 
-    history.responsibilities =
-      Array.isArray(responsibilities)
-        ? responsibilities.map(
-            (item, index) => ({
-              text: item.text,
-              order: index,
-              status:
-                item.status || "active",
-            })
-          )
-        : [];
+    if (Array.isArray(req.body.responsibilities)) {
+      history.responsibilities =
+        req.body.responsibilities;
+    }
 
-    history.closingContent =
-      Array.isArray(closingContent)
-        ? closingContent.map(
-            (item, index) => ({
-              text: item.text,
-              order: index,
-              status:
-                item.status || "active",
-            })
-          )
-        : [];
+    if (Array.isArray(req.body.closingContent)) {
+      history.closingContent =
+        req.body.closingContent;
+    }
 
-    history.status =
-      status || "active";
+    if (req.body.status !== undefined) {
+      history.status = req.body.status;
+    }
 
     await history.save();
 
     return res.status(200).json({
       success: true,
-      message:
-        "History page updated successfully.",
+      message: "History page updated successfully.",
       data: history,
     });
   } catch (error) {
-    console.error(
-      "Update History Error:",
-      error
-    );
+    console.error("Update History Error:", error);
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to update History page.",
+      message: "Server error while updating History page.",
+      error: error.message,
     });
   }
 };
 
-
-// =========================================================
-// DELETE HISTORY
-// DELETE /api/history/admin/:id
-// =========================================================
+// ==========================================
+// ADMIN - DELETE HISTORY
+// ==========================================
 
 const deleteHistory = async (req, res) => {
   try {
-    const history =
-      await History.findByIdAndDelete(
-        req.params.id
-      );
+    const history = await History.findByIdAndDelete(
+      req.params.id
+    );
 
     if (!history) {
       return res.status(404).json({
         success: false,
-        message:
-          "History record not found.",
+        message: "History record not found.",
       });
     }
 
     return res.status(200).json({
       success: true,
-      message:
-        "History page deleted successfully.",
+      message: "History page deleted successfully.",
     });
   } catch (error) {
-    console.error(
-      "Delete History Error:",
-      error
-    );
+    console.error("Delete History Error:", error);
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to delete History page.",
+      message: "Server error while deleting History page.",
+      error: error.message,
     });
   }
 };
 
-
-// =========================================================
-// EXPORT CONTROLLERS
-// =========================================================
+// ==========================================
+// EXPORT
+// ==========================================
 
 module.exports = {
   getHistory,

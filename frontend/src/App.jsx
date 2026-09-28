@@ -10,6 +10,7 @@ import Register from "./pages/auth/Register";
 import Contact from "./pages/Contact";
 import PublicServices from "./pages/Services";
 import History from "./pages/History";
+import Tourism from "./pages/Tourism";
 
 // =========================================================
 // ADMIN COMPONENTS
@@ -36,6 +37,9 @@ import EmergencyContacts from "./pages/admin/EmergencyContacts";
 import Settings from "./pages/admin/Settings";
 import HistoryAdmin from "./pages/admin/History";
 
+// ✅ TOURISM ADMIN
+import TourismAdmin from "./pages/admin/Tourism";
+
 // =========================================================
 // APP
 // =========================================================
@@ -43,6 +47,7 @@ import HistoryAdmin from "./pages/admin/History";
 function App() {
   return (
     <Routes>
+
       {/* =====================================================
           PUBLIC ROUTES
       ===================================================== */}
@@ -83,6 +88,12 @@ function App() {
         element={<History />}
       />
 
+      {/* PUBLIC TOURISM */}
+      <Route
+        path="/tourism"
+        element={<Tourism />}
+      />
+
       {/* =====================================================
           ADMIN ROUTES
       ===================================================== */}
@@ -91,7 +102,13 @@ function App() {
         path="/admin"
         element={<AdminRoute />}
       >
+
         <Route element={<AdminLayout />}>
+
+          {/* =================================================
+              ADMIN ROOT
+          ================================================= */}
+
           {/* /admin → /admin/dashboard */}
           <Route
             index
@@ -103,83 +120,132 @@ function App() {
             }
           />
 
-          {/* DASHBOARD */}
+          {/* =================================================
+              DASHBOARD
+          ================================================= */}
+
           <Route
             path="dashboard"
             element={<AdminDashboard />}
           />
 
-          {/* USERS */}
+          {/* =================================================
+              USERS
+          ================================================= */}
+
           <Route
             path="users"
             element={<Users />}
           />
 
-          {/* ADMIN SERVICES */}
+          {/* =================================================
+              SERVICES
+          ================================================= */}
+
           <Route
             path="services"
             element={<AdminServices />}
           />
 
-          {/* CATEGORIES */}
+          {/* =================================================
+              CATEGORIES
+          ================================================= */}
+
           <Route
             path="categories"
             element={<Categories />}
           />
 
-          {/* MINISTRIES */}
+          {/* =================================================
+              MINISTRIES
+          ================================================= */}
+
           <Route
             path="ministries"
             element={<Ministries />}
           />
 
-          {/* AGENCIES */}
+          {/* =================================================
+              AGENCIES
+          ================================================= */}
+
           <Route
             path="agencies"
             element={<Agencies />}
           />
 
-          {/* PROVINCES */}
+          {/* =================================================
+              PROVINCES
+          ================================================= */}
+
           <Route
             path="provinces"
             element={<Provinces />}
           />
 
-          {/* CABINET */}
+          {/* =================================================
+              CABINET
+          ================================================= */}
+
           <Route
             path="cabinet"
             element={<Cabinet />}
           />
 
-          {/* NEWS */}
+          {/* =================================================
+              NEWS
+          ================================================= */}
+
           <Route
             path="news"
             element={<News />}
           />
 
-          {/* EVENTS */}
+          {/* =================================================
+              EVENTS
+          ================================================= */}
+
           <Route
             path="events"
             element={<Events />}
           />
 
-          {/* EMERGENCY CONTACTS */}
+          {/* =================================================
+              EMERGENCY CONTACTS
+          ================================================= */}
+
           <Route
             path="emergency-contacts"
             element={<EmergencyContacts />}
           />
 
-          {/* HISTORY */}
+          {/* =================================================
+              HISTORY
+          ================================================= */}
+
           <Route
             path="history"
             element={<HistoryAdmin />}
           />
 
-          {/* SETTINGS */}
+          {/* =================================================
+              TOURISM ADMIN
+          ================================================= */}
+
+          <Route
+            path="tourism"
+            element={<TourismAdmin />}
+          />
+
+          {/* =================================================
+              SETTINGS
+          ================================================= */}
+
           <Route
             path="settings"
             element={<Settings />}
           />
+
         </Route>
       </Route>
 
@@ -196,6 +262,7 @@ function App() {
           />
         }
       />
+
     </Routes>
   );
 }

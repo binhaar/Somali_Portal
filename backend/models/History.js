@@ -26,7 +26,6 @@ const historyContentSchema = new mongoose.Schema(
 
 const historySchema = new mongoose.Schema(
   {
-    // Page title
     title: {
       type: String,
       required: true,
@@ -34,7 +33,6 @@ const historySchema = new mongoose.Schema(
       default: "History",
     },
 
-    // Fixed URL: /about-somalia/history
     slug: {
       type: String,
       required: true,
@@ -44,7 +42,6 @@ const historySchema = new mongoose.Schema(
       default: "history",
     },
 
-    // Main heading
     heading: {
       type: String,
       required: true,
@@ -52,32 +49,27 @@ const historySchema = new mongoose.Schema(
       default: "Historical Background",
     },
 
-    // Historical background paragraphs
     content: {
       type: [historyContentSchema],
       default: [],
     },
 
-    // Responsibilities heading
     responsibilitiesHeading: {
       type: String,
       default: "Responsibilities",
       trim: true,
     },
 
-    // Numbered responsibilities
     responsibilities: {
       type: [historyContentSchema],
       default: [],
     },
 
-    // Final paragraphs
     closingContent: {
       type: [historyContentSchema],
       default: [],
     },
 
-    // Publish status
     status: {
       type: String,
       enum: ["active", "inactive"],
@@ -89,4 +81,7 @@ const historySchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("History", historySchema);
+module.exports = mongoose.model(
+  "History",
+  historySchema
+);
