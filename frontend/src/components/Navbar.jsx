@@ -34,14 +34,11 @@ export default function Navbar({
 }) {
   const navigate = useNavigate();
 
-  const [mobileOpen, setMobileOpen] =
-    useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const [openMenu, setOpenMenu] =
-    useState(null);
+  const [openMenu, setOpenMenu] = useState(null);
 
-  const [userMenuOpen, setUserMenuOpen] =
-    useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const isSomali = language === "so";
 
@@ -107,8 +104,7 @@ export default function Navbar({
     },
   };
 
-  const l =
-    labels[language] || labels.en;
+  const l = labels[language] || labels.en;
 
   /* =====================================================
      CLOSE MENUS
@@ -132,8 +128,7 @@ export default function Navbar({
       return;
     }
 
-    const element =
-      document.getElementById(id);
+    const element = document.getElementById(id);
 
     if (element) {
       element.scrollIntoView({
@@ -150,9 +145,7 @@ export default function Navbar({
   const handleHome = () => {
     closeMenus();
 
-    if (
-      window.location.pathname === "/"
-    ) {
+    if (window.location.pathname === "/") {
       window.scrollTo({
         top: 0,
         behavior: "smooth",
@@ -176,10 +169,7 @@ export default function Navbar({
   ====================================================== */
 
   const handleLanguage = (value) => {
-    localStorage.setItem(
-      "portalLanguage",
-      value
-    );
+    localStorage.setItem("portalLanguage", value);
 
     if (typeof setLanguage === "function") {
       setLanguage(value);
@@ -230,7 +220,9 @@ export default function Navbar({
       icon: Users,
       action: () => {
         closeMenus();
-        navigate("/culture-people");
+
+        // People & Culture
+        navigate("/people-culture");
       },
     },
 
@@ -254,9 +246,7 @@ export default function Navbar({
       icon: FileText,
       action: () => {
         closeMenus();
-        navigate(
-          "/government/constitution"
-        );
+        navigate("/government/constitution");
       },
     },
 
@@ -265,17 +255,14 @@ export default function Navbar({
       icon: Landmark,
       action: () => {
         closeMenus();
-        navigate(
-          "/government/vision"
-        );
+        navigate("/government/vision");
       },
     },
 
     {
       label: l.executive,
       icon: Landmark,
-      action: () =>
-        handleScroll("leadership"),
+      action: () => handleScroll("leadership"),
     },
 
     {
@@ -328,10 +315,7 @@ export default function Navbar({
      DROPDOWN
   ====================================================== */
 
-  const renderDropdown = (
-    menuName,
-    items
-  ) => {
+  const renderDropdown = (menuName, items) => {
     if (openMenu !== menuName) {
       return null;
     }
@@ -395,9 +379,7 @@ export default function Navbar({
                 <Icon size={17} />
               </span>
 
-              <span>
-                {item.label}
-              </span>
+              <span>{item.label}</span>
             </button>
           );
         })}
@@ -486,7 +468,6 @@ export default function Navbar({
             {/* THE NATION */}
 
             <div className="relative">
-
               <button
                 type="button"
                 onClick={() =>
@@ -527,19 +508,16 @@ export default function Navbar({
                 "nation",
                 nationItems
               )}
-
             </div>
 
             {/* GOVERNMENT */}
 
             <div className="relative">
-
               <button
                 type="button"
                 onClick={() =>
                   setOpenMenu(
-                    openMenu ===
-                      "government"
+                    openMenu === "government"
                       ? null
                       : "government"
                   )
@@ -564,8 +542,7 @@ export default function Navbar({
                 <ChevronDown
                   size={15}
                   className={
-                    openMenu ===
-                    "government"
+                    openMenu === "government"
                       ? "rotate-180 transition"
                       : "transition"
                   }
@@ -576,7 +553,6 @@ export default function Navbar({
                 "government",
                 governmentItems
               )}
-
             </div>
 
             {/* SERVICES */}
@@ -621,7 +597,6 @@ export default function Navbar({
             >
               {l.contact}
             </button>
-
           </nav>
 
           {/* =================================================
@@ -633,7 +608,6 @@ export default function Navbar({
             {/* LANGUAGE */}
 
             <div className="relative">
-
               <button
                 type="button"
                 onClick={() =>
@@ -667,13 +641,10 @@ export default function Navbar({
                   ? "SO"
                   : "EN"}
 
-                <ChevronDown
-                  size={14}
-                />
+                <ChevronDown size={14} />
               </button>
 
-              {openMenu ===
-                "language" && (
+              {openMenu === "language" && (
                 <div
                   className="
                     absolute
@@ -693,40 +664,34 @@ export default function Navbar({
                   {[
                     ["en", "English"],
                     ["so", "Somali"],
-                  ].map(
-                    ([code, name]) => (
-                      <button
-                        key={code}
-                        type="button"
-                        onClick={() =>
-                          handleLanguage(
-                            code
-                          )
+                  ].map(([code, name]) => (
+                    <button
+                      key={code}
+                      type="button"
+                      onClick={() =>
+                        handleLanguage(code)
+                      }
+                      className={`
+                        w-full
+                        rounded-xl
+                        px-3
+                        py-2.5
+                        text-left
+                        text-sm
+                        font-semibold
+                        transition
+                        ${
+                          language === code
+                            ? "bg-blue-50 text-[#0B3D91]"
+                            : "text-slate-700 hover:bg-slate-50"
                         }
-                        className={`
-                          w-full
-                          rounded-xl
-                          px-3
-                          py-2.5
-                          text-left
-                          text-sm
-                          font-semibold
-                          transition
-                          ${
-                            language ===
-                            code
-                              ? "bg-blue-50 text-[#0B3D91]"
-                              : "text-slate-700 hover:bg-slate-50"
-                          }
-                        `}
-                      >
-                        {name}
-                      </button>
-                    )
-                  )}
+                      `}
+                    >
+                      {name}
+                    </button>
+                  ))}
                 </div>
               )}
-
             </div>
 
             {/* AUTH */}
@@ -820,9 +785,7 @@ export default function Navbar({
                       text-[#0B3D91]
                     "
                   >
-                    <UserRound
-                      size={18}
-                    />
+                    <UserRound size={18} />
                   </span>
 
                   <span
@@ -872,12 +835,10 @@ export default function Navbar({
                     {/* USER INFO */}
 
                     <div className="border-b border-slate-100 px-3 py-3">
-
                       <p className="text-sm font-black text-slate-900">
                         {user.firstName
                           ? `${user.firstName} ${
-                              user.lastName ||
-                              ""
+                              user.lastName || ""
                             }`
                           : user.username}
                       </p>
@@ -885,13 +846,11 @@ export default function Navbar({
                       <p className="mt-1 truncate text-xs text-slate-500">
                         {user.email}
                       </p>
-
                     </div>
 
                     {/* ADMIN DASHBOARD */}
 
-                    {user.role ===
-                      "ADMIN" && (
+                    {user.role === "ADMIN" && (
                       <button
                         type="button"
                         onClick={() => {
@@ -919,9 +878,7 @@ export default function Navbar({
                           hover:text-[#0B3D91]
                         "
                       >
-                        <LayoutDashboard
-                          size={17}
-                        />
+                        <LayoutDashboard size={17} />
 
                         {l.dashboard}
                       </button>
@@ -931,9 +888,7 @@ export default function Navbar({
 
                     <button
                       type="button"
-                      onClick={
-                        handleLogout
-                      }
+                      onClick={handleLogout}
                       className="
                         flex
                         w-full
@@ -954,13 +909,10 @@ export default function Navbar({
 
                       {l.logout}
                     </button>
-
                   </div>
                 )}
-
               </div>
             )}
-
           </div>
 
           {/* MOBILE BUTTON */}
@@ -968,9 +920,7 @@ export default function Navbar({
           <button
             type="button"
             onClick={() =>
-              setMobileOpen(
-                !mobileOpen
-              )
+              setMobileOpen(!mobileOpen)
             }
             className="
               flex
@@ -995,7 +945,6 @@ export default function Navbar({
               <Menu size={22} />
             )}
           </button>
-
         </div>
 
         {/* =================================================
@@ -1012,16 +961,13 @@ export default function Navbar({
               lg:hidden
             "
           >
-
             <div className="space-y-1">
 
               {/* HOME */}
 
               <button
                 type="button"
-                onClick={
-                  handleHome
-                }
+                onClick={handleHome}
                 className="
                   flex
                   w-full
@@ -1042,7 +988,6 @@ export default function Navbar({
               {/* NATION */}
 
               <div>
-
                 <button
                   type="button"
                   onClick={() =>
@@ -1100,9 +1045,7 @@ export default function Navbar({
 
                         return (
                           <button
-                            key={
-                              item.label
-                            }
+                            key={item.label}
                             type="button"
                             onClick={
                               item.action
@@ -1123,26 +1066,20 @@ export default function Navbar({
                               hover:text-[#0B3D91]
                             "
                           >
-                            <Icon
-                              size={16}
-                            />
+                            <Icon size={16} />
 
-                            {
-                              item.label
-                            }
+                            {item.label}
                           </button>
                         );
                       }
                     )}
                   </div>
                 )}
-
               </div>
 
               {/* GOVERNMENT */}
 
               <div>
-
                 <button
                   type="button"
                   onClick={() =>
@@ -1200,9 +1137,7 @@ export default function Navbar({
 
                         return (
                           <button
-                            key={
-                              item.label
-                            }
+                            key={item.label}
                             type="button"
                             onClick={
                               item.action
@@ -1223,20 +1158,15 @@ export default function Navbar({
                               hover:text-[#0B3D91]
                             "
                           >
-                            <Icon
-                              size={16}
-                            />
+                            <Icon size={16} />
 
-                            {
-                              item.label
-                            }
+                            {item.label}
                           </button>
                         );
                       }
                     )}
                   </div>
                 )}
-
               </div>
 
               {/* SERVICES */}
@@ -1245,9 +1175,7 @@ export default function Navbar({
                 type="button"
                 onClick={() => {
                   closeMenus();
-                  navigate(
-                    "/services"
-                  );
+                  navigate("/services");
                 }}
                 className="
                   flex
@@ -1270,9 +1198,7 @@ export default function Navbar({
 
               <button
                 type="button"
-                onClick={
-                  handleContact
-                }
+                onClick={handleContact}
                 className="
                   flex
                   w-full
@@ -1289,13 +1215,10 @@ export default function Navbar({
                   hover:text-[#0B3D91]
                 "
               >
-                <MessageSquare
-                  size={17}
-                />
+                <MessageSquare size={17} />
 
                 {l.contact}
               </button>
-
             </div>
 
             {/* MOBILE LANGUAGE */}
@@ -1308,7 +1231,6 @@ export default function Navbar({
                 pt-4
               "
             >
-
               <p
                 className="
                   mb-2
@@ -1324,41 +1246,34 @@ export default function Navbar({
               </p>
 
               <div className="grid grid-cols-2 gap-2 px-4">
-
                 {[
                   ["en", "English"],
                   ["so", "Somali"],
-                ].map(
-                  ([code, name]) => (
-                    <button
-                      key={code}
-                      type="button"
-                      onClick={() =>
-                        handleLanguage(
-                          code
-                        )
+                ].map(([code, name]) => (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() =>
+                      handleLanguage(code)
+                    }
+                    className={`
+                      rounded-xl
+                      border
+                      px-3
+                      py-2.5
+                      text-xs
+                      font-bold
+                      transition
+                      ${
+                        language === code
+                          ? "border-[#0B3D91] bg-blue-50 text-[#0B3D91]"
+                          : "border-slate-200 text-slate-600 hover:bg-slate-50"
                       }
-                      className={`
-                        rounded-xl
-                        border
-                        px-3
-                        py-2.5
-                        text-xs
-                        font-bold
-                        transition
-                        ${
-                          language ===
-                          code
-                            ? "border-[#0B3D91] bg-blue-50 text-[#0B3D91]"
-                            : "border-slate-200 text-slate-600 hover:bg-slate-50"
-                        }
-                      `}
-                    >
-                      {name}
-                    </button>
-                  )
-                )}
-
+                    `}
+                  >
+                    {name}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -1373,7 +1288,6 @@ export default function Navbar({
                 sm:grid-cols-2
               "
             >
-
               {!user ? (
                 <>
                   {/* LOGIN */}
@@ -1382,9 +1296,7 @@ export default function Navbar({
                     type="button"
                     onClick={() => {
                       closeMenus();
-                      navigate(
-                        "/login"
-                      );
+                      navigate("/login");
                     }}
                     className="
                       flex
@@ -1413,9 +1325,7 @@ export default function Navbar({
                     type="button"
                     onClick={() => {
                       closeMenus();
-                      navigate(
-                        "/register"
-                      );
+                      navigate("/register");
                     }}
                     className="
                       flex
@@ -1438,8 +1348,7 @@ export default function Navbar({
                 <>
                   {/* ADMIN DASHBOARD */}
 
-                  {user.role ===
-                    "ADMIN" && (
+                  {user.role === "ADMIN" && (
                     <button
                       type="button"
                       onClick={() => {
@@ -1475,9 +1384,7 @@ export default function Navbar({
 
                   <button
                     type="button"
-                    onClick={
-                      handleLogout
-                    }
+                    onClick={handleLogout}
                     className="
                       flex
                       items-center
@@ -1500,12 +1407,9 @@ export default function Navbar({
                   </button>
                 </>
               )}
-
             </div>
-
           </div>
         )}
-
       </div>
     </header>
   );

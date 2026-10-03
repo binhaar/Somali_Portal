@@ -114,6 +114,11 @@ function AdminLayout() {
        path: "/admin/tourism",
        icon: Compass, 
       },
+      {
+       label: "People & Culture",
+       path: "/admin/people-culture",
+       icon: Users,
+       },
      {
       label: "Settings",
       path: "/admin/settings",

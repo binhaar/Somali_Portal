@@ -1,8 +1,9 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-// =========================================================
+// =====================================================
 // PUBLIC PAGES
-// =========================================================
+// =====================================================
 
 import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
@@ -11,17 +12,11 @@ import Contact from "./pages/Contact";
 import PublicServices from "./pages/Services";
 import History from "./pages/History";
 import Tourism from "./pages/Tourism";
+import PeopleCulture from "./pages/PeopleCulture";
 
-// =========================================================
-// ADMIN COMPONENTS
-// =========================================================
-
-import AdminRoute from "./components/AdminRoute";
-import AdminLayout from "./layouts/AdminLayout";
-
-// =========================================================
+// =====================================================
 // ADMIN PAGES
-// =========================================================
+// =====================================================
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Users from "./pages/admin/Users";
@@ -34,82 +29,84 @@ import Cabinet from "./pages/admin/Cabinet";
 import News from "./pages/admin/News";
 import Events from "./pages/admin/Events";
 import EmergencyContacts from "./pages/admin/EmergencyContacts";
-import Settings from "./pages/admin/Settings";
 import HistoryAdmin from "./pages/admin/History";
-
-// ✅ TOURISM ADMIN
 import TourismAdmin from "./pages/admin/Tourism";
+import PeopleCultureAdmin from "./pages/admin/PeopleCulture";
+import Settings from "./pages/admin/Settings";
 
-// =========================================================
-// APP
-// =========================================================
+// =====================================================
+// ADMIN AUTH & LAYOUT
+// =====================================================
+
+import AdminRoute from "./components/AdminRoute";
+import AdminLayout from "./layouts/AdminLayout";
 
 function App() {
   return (
     <Routes>
 
-      {/* =====================================================
+      {/* =================================================
           PUBLIC ROUTES
-      ===================================================== */}
+      ================================================= */}
 
-      {/* HOME */}
       <Route
         path="/"
         element={<Home />}
       />
 
-      {/* LOGIN */}
       <Route
         path="/login"
         element={<Login />}
       />
 
-      {/* REGISTER */}
       <Route
         path="/register"
         element={<Register />}
       />
 
-      {/* CONTACT */}
       <Route
         path="/contact"
         element={<Contact />}
       />
 
-      {/* PUBLIC SERVICES */}
       <Route
         path="/services"
         element={<PublicServices />}
       />
 
-      {/* PUBLIC HISTORY */}
+      {/* =================================================
+          NATION
+      ================================================= */}
+
+      {/* History - DO NOT CHANGE */}
       <Route
         path="/history"
         element={<History />}
       />
 
-      {/* PUBLIC TOURISM */}
+      {/* Tourism */}
       <Route
         path="/tourism"
         element={<Tourism />}
       />
 
-      {/* =====================================================
+      {/* People & Culture */}
+      <Route
+        path="/people-culture"
+        element={<PeopleCulture />}
+      />
+
+      {/* =================================================
           ADMIN ROUTES
-      ===================================================== */}
+      ================================================= */}
 
       <Route
         path="/admin"
         element={<AdminRoute />}
       >
-
         <Route element={<AdminLayout />}>
 
-          {/* =================================================
-              ADMIN ROOT
-          ================================================= */}
-
-          {/* /admin → /admin/dashboard */}
+          {/* Admin root */}
           <Route
             index
             element={
@@ -120,127 +117,91 @@ function App() {
             }
           />
 
-          {/* =================================================
-              DASHBOARD
-          ================================================= */}
-
+          {/* Dashboard */}
           <Route
             path="dashboard"
             element={<AdminDashboard />}
           />
 
-          {/* =================================================
-              USERS
-          ================================================= */}
-
+          {/* Users */}
           <Route
             path="users"
             element={<Users />}
           />
 
-          {/* =================================================
-              SERVICES
-          ================================================= */}
-
+          {/* Services */}
           <Route
             path="services"
             element={<AdminServices />}
           />
 
-          {/* =================================================
-              CATEGORIES
-          ================================================= */}
-
+          {/* Categories */}
           <Route
             path="categories"
             element={<Categories />}
           />
 
-          {/* =================================================
-              MINISTRIES
-          ================================================= */}
-
+          {/* Ministries */}
           <Route
             path="ministries"
             element={<Ministries />}
           />
 
-          {/* =================================================
-              AGENCIES
-          ================================================= */}
-
+          {/* Agencies */}
           <Route
             path="agencies"
             element={<Agencies />}
           />
 
-          {/* =================================================
-              PROVINCES
-          ================================================= */}
-
+          {/* Provinces */}
           <Route
             path="provinces"
             element={<Provinces />}
           />
 
-          {/* =================================================
-              CABINET
-          ================================================= */}
-
+          {/* Cabinet */}
           <Route
             path="cabinet"
             element={<Cabinet />}
           />
 
-          {/* =================================================
-              NEWS
-          ================================================= */}
-
+          {/* News */}
           <Route
             path="news"
             element={<News />}
           />
 
-          {/* =================================================
-              EVENTS
-          ================================================= */}
-
+          {/* Events */}
           <Route
             path="events"
             element={<Events />}
           />
 
-          {/* =================================================
-              EMERGENCY CONTACTS
-          ================================================= */}
-
+          {/* Emergency Contacts */}
           <Route
             path="emergency-contacts"
             element={<EmergencyContacts />}
           />
 
-          {/* =================================================
-              HISTORY
-          ================================================= */}
-
+          {/* History */}
           <Route
             path="history"
             element={<HistoryAdmin />}
           />
 
-          {/* =================================================
-              TOURISM ADMIN
-          ================================================= */}
-
+          {/* Tourism */}
           <Route
             path="tourism"
             element={<TourismAdmin />}
           />
 
-          {/* =================================================
-              SETTINGS
-          ================================================= */}
+          {/* People & Culture */}
+          <Route
+            path="people-culture"
+            element={<PeopleCultureAdmin />}
+          />
 
+          {/* Settings */}
           <Route
             path="settings"
             element={<Settings />}
@@ -249,9 +210,9 @@ function App() {
         </Route>
       </Route>
 
-      {/* =====================================================
-          404
-      ===================================================== */}
+      {/* =================================================
+          FALLBACK
+      ================================================= */}
 
       <Route
         path="*"
